@@ -69,7 +69,7 @@ void binaryCountOneMode() {
   // on the LEDs
   for (int numberToDisplay = 0; numberToDisplay < 255; numberToDisplay++) {
     Serial.print(numberToDisplay);
-    3Serial.print("\n");
+    Serial.print("\n");
     // take the latchPin low so 
     // the LEDs don't change while you're sending in bits:
     digitalWrite(latchPin, LOW);
