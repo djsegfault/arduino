@@ -1,0 +1,25 @@
+/*
+  DigitalOutPin.h - Library for controlling lights.
+  Created by David Kramer.
+  Released into the public domain.
+*/
+#ifndef DigitalOutPin_h
+#define DigitalOutPin_h
+
+#include "Arduino.h"
+
+class DigitalOutPin
+{
+  public:
+    DigitalOutPin(int pin);
+    void on();
+    void of();
+  private:
+    int _pin;
+    boolean _isOn;
+    boolean _isDebug;;
+    boolean _isMock;
+};
+
+#endif
+
