@@ -1,13 +1,23 @@
+
 #include <DigitalOutPin.h>
 
+
+
+DigitalOutPin outPin(13); 
+
 void setup() {
-  // put your setup code here, to run once:
-  DigitalOutPin outPin(13); 
-  outPin.setMock(true);
+  Serial.begin(9600);
+  Serial.println("Init");
+  outPin.setMock(false);
+  outPin.setDebug(true);
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  outPin.setMock(! outPin.getMock() );
+  outPin.on();
+  delay(1000);
+  outPin.off();
+  delay(1000);
 
 }
