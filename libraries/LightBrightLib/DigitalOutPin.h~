@@ -12,12 +12,18 @@ class DigitalOutPin
 {
   public:
     DigitalOutPin(int pin);
+    void set(int value);
+    int get();
     void on();
-    void of();
+    void off();
+    void setMock(boolean value);
+    void setDebug(boolean value);
+    int getMock();
+    int getDebug();
   private:
     int _pin;
-    boolean _isOn;
-    boolean _isDebug;;
+    int _value;
+    boolean _isDebug;
     boolean _isMock;
 };
 

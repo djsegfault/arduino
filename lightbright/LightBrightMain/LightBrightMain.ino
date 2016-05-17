@@ -3,7 +3,7 @@
 
 
 
-DigitalOutPin outPin(13); 
+DigitalOutPin outPin(25); 
 
 void setup() {
   Serial.begin(9600);
