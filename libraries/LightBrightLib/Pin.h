@@ -1,3 +1,6 @@
+
+
+
 /*
   Pin.h - LightBrightLib - Library for controlling lights.
   Created by David Kramer.
@@ -11,7 +14,7 @@
 #include "Arduino.h"
 
 #define PIN_MIN_VALUE 0
-#define PIN_MAX_VALUE 100
+#define PIN_MAX_VALUE 255
 
 class Pin
 {

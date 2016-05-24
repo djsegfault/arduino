@@ -71,23 +71,25 @@ test(ChannelPin)
 
 test(ChannelLevel)
 {
-  testPin1.setDebug(true);
-  testChannel1.setLevel(42);
-  assertEqual(42, testChannel1.getPin().getValue());
+    testChannel1.setMasterLevel(PIN_MAX_VALUE);
+    testPin1.setDebug(true);
+    
+    testChannel1.setLevel(42);
+    assertEqual(42, testChannel1.getPin().getValue());
+    
+    testChannel1.setMasterLevel(128);
+    assertEqual(42 * ((float)128/(float)PIN_MAX_VALUE), testChannel1.getPin().getValue());
 
-  testChannel1.setMasterLevel(50);
-  assertEqual(21, testChannel1.getPin().getValue());
- 
-  testChannel1.setMasterLevel(10);
-  assertEqual(4, testChannel1.getPin().getValue());
-  
-  testChannel1.off();
-  assertEqual(0, testChannel1.getPin().getValue());
+    testChannel1.setMasterLevel(10);
+    assertEqual(42 * ((float)10/(float)PIN_MAX_VALUE), testChannel1.getPin().getValue());
 
-  testChannel1.on();
-  assertEqual(10, testChannel1.getPin().getValue());
- 
-  testChannel1.setMasterLevel(100);
+    testChannel1.off();
+    assertEqual(0, testChannel1.getPin().getValue());
+
+    testChannel1.on();
+    assertEqual(10, testChannel1.getPin().getValue());
+
+    testChannel1.setMasterLevel(100);
 }
 
 
