@@ -13,7 +13,7 @@ class DigitalOutPin : public Pin
 {
   public:
     DigitalOutPin();
-    DigitalOutPin(int pin);
+    DigitalOutPin(int pinNumber);
     void on();
     void off();
   protected:

@@ -1,13 +1,23 @@
 #include "Arduino.h"
+#include "Logging.h"
+
 #include "Channel.h"
 #include "Pin.h"
 
 Channel::Channel() {
-	setMasterLevel(100);
+	setMasterLevel(PIN_MAX_VALUE);
 }
 
 Channel::Channel(Pin pin) : Channel() {
 	setPin(pin);
+}
+
+void Channel::setNumber(int channelNumber) {
+	_channelNumber = channelNumber;
+}
+
+int Channel::getNumber() {
+	return _channelNumber;
 }
 
 void Channel::setPin(Pin pin) {
@@ -37,6 +47,14 @@ void Channel::off() {
 	_updateEffectiveLevel();
 }
 
+void Channel::toggle() {
+	if(_level != PIN_MAX_VALUE) {
+		on();
+	} else {
+		off();
+	}
+}
+
 void Channel::setMasterLevel(int level) {
 	_masterLevel = level;
 	_updateEffectiveLevel();
@@ -47,18 +65,7 @@ void Channel::_updateEffectiveLevel() {
 	float divisor = (float) (PIN_MAX_VALUE - PIN_MIN_VALUE);
 	_effectiveLevel = (int) (_level * ( (float) _masterLevel / divisor ) );
 	
-	/*
-		For debugging this calculation
-		Serial.print("updateEffectiveLevel(): master=");
-		Serial.print(_masterLevel);
-		Serial.print("  divisor=");
-		Serial.print(divisor);
-		Serial.print(" level=");
-		Serial.print( _level);
-		Serial.print(" effective=");
-		Serial.println(_effectiveLevel);
-	*/
-	
+	Log.Debug("Channel %d pin %d level=%d master=%d effective=%d"CR, _channelNumber, _pin.getPinNumber(), _level, _masterLevel, _effectiveLevel);
 	_pin.setValue(_effectiveLevel);
 }
 

@@ -1,6 +1,3 @@
-
-
-
 /*
   Pin.h - LightBrightLib - Library for controlling lights.
   Created by David Kramer.
@@ -20,24 +17,22 @@ class Pin
 {
   public:
   	Pin();
-    Pin(int pin);
-    void setPin(int pin);
-    int getPin();
+    Pin(int pinNumber);
+    void setPinNumber(int pinNumber);
+    int getPinNumber();
     void setValue(int value);
     int getValue();
     void on();
     void off();
     void setMock(boolean value);
-    void setDebug(boolean value);
     int getMock();
-    int getDebug();
   protected:
-    int _pin;
+    int _pinNumber;
     int _value;
-    boolean _isDebug;
     boolean _isMock;
+    
     // This method is child-specific. It's empty in this base class
-    void _setPinValue(int value);
+    virtual void _setPinValue(int value);
 };
 
 #endif

@@ -1,36 +1,29 @@
 #include "Arduino.h"
+#include "Logging.h"
+
 #include "Pin.h"
 
 Pin::Pin() {
 }
 
-Pin::Pin(int pin) {
-	_pin = pin;
+Pin::Pin(int pinNumber) : Pin(){
+	setPinNumber(pinNumber);
+	setMock(false);
 }
 
-void Pin::setPin(int pin) {
-	_pin = pin;
+void Pin::setPinNumber(int pinNumber) {
+	pinMode(pinNumber, OUTPUT);
+	_pinNumber = pinNumber;
 }
 
-int Pin::getPin() {
-	return _pin;
+int Pin::getPinNumber() {
+	return _pinNumber;
 }	
 
 void Pin::setValue(int value) {
 	_value = value;
 	
-	if(_isDebug) {
-		String message = "Pin ";
-		message = message + _pin;
-		message = message + " -> " ;
-		message = message + _value ;
-		if( _isMock) {
-			message = message + " (MOCKED)";
-		}
-		
-		Serial.println(message);
-	}
-	
+	Log.Verbose("Pin.SetValue %d --> %d mocked=%d"CR, _pinNumber, value, _isMock);	
 	if(! _isMock) {
 		_setPinValue(value);
 	}		
@@ -49,7 +42,8 @@ void Pin::off() {
 }
 
 void Pin::_setPinValue(int value) {
-	// This method is child-specific. It's empty in this base class
+	// This method is child-specific.  It's virtual and must be overridden. 
+	// It's empty in this base class
 }
 
 void Pin::setMock(boolean value) {
@@ -59,14 +53,6 @@ void Pin::setMock(boolean value) {
 int Pin::getMock() {
 	return _isMock;
 } 
-
-void Pin::setDebug(boolean value) {
-	_isDebug = value;
-}
-
-int Pin::getDebug() {
-	return _isDebug;
-}
 
 
 

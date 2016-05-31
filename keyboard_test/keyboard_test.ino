@@ -1,4 +1,4 @@
-:#include <PS2Keyboard.h>
+#include <PS2Keyboard.h>
 
 // http://www.instructables.com/id/Connect-PS2-Keyboard-to-Arduino/step2/Code/
 
