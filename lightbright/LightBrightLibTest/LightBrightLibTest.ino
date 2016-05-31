@@ -13,9 +13,9 @@ Channel testChannel1(testPin1);
 test(PinPin)
 {
   Pin testPinL1(TEST_PIN);
-  assertEqual(TEST_PIN, testPinL1.getPin());
-  testPinL1.setPin(11);
-  assertEqual(11, testPinL1.getPin());
+  assertEqual(TEST_PIN, testPinL1.getPinNumber());
+  testPinL1.setPinNumber(11);
+  assertEqual(11, testPinL1.getPinNumber());
 }
 
 test(PinValue)
@@ -46,15 +46,6 @@ test(PinMockMode)
   assertEqual(false, testPin1.getMock());
 }
 
-test(PinDebugMode)
-{
-  testPin1.setDebug(false);
-  testPin1.setDebug(true);
-  assertEqual(true, testPin1.getDebug());
-  testPin1.setDebug(false);
-  assertEqual(false, testPin1.getDebug());
-}
-
 test(DOPinOnOff)
 {
   testDOPin1.off();
@@ -66,7 +57,7 @@ test(DOPinOnOff)
 
 test(ChannelPin)
 {
-  assertEqual(TEST_PIN, testChannel1.getPin().getPin());
+  assertEqual(TEST_PIN, testChannel1.getPin().getPinNumber());
 }
 
 test(ChannelLevel)
@@ -96,8 +87,6 @@ test(ChannelLevel)
 void setup()
 {
   Serial.begin(9600);
-  Serial.println(testPin1.getDebug());
-
 }
 
 void loop()
