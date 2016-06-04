@@ -1,11 +1,14 @@
 
+
 // Third-party headers
 #include <PS2Keyboard.h>
 
+
 // LightBright headers
+#include "LightBrightConfig.h"
 #include "DigitalOutPin.h"
 #include "Channel.h"
-#include "LightBrightConfig.h"
+#include "KeyboardHandler.h"
 
 #include <Logging.h>
 
@@ -14,8 +17,6 @@
 // Globals
 Channel DigitalChannels[LBPIN_DOUT_COUNT];
 DigitalOutPin DigitalPins[LBPIN_DOUT_COUNT];
-
-DigitalOutPin outPin(13);
 
 #ifdef LBC_KEYBOARD
 PS2Keyboard keyboard;
@@ -41,6 +42,7 @@ void setup() {
 }
 
 void loop() {
+  
 #ifdef LBC_KEYBOARD
   keyboardHandler();
 #endif
