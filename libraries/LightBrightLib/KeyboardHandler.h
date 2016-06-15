@@ -18,9 +18,9 @@
 class KeyboardHandler
 {
 	public:
-		void handleKey(int key);
 		void begin(Channel *digitalChannels);
 		bool handleKeyboard();
+		bool handleKey(char key);
 	protected:
 		Channel *_digitalChannels;
 		PS2Keyboard _keyboard;

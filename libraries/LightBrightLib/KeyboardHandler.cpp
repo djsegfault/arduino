@@ -15,29 +15,48 @@ void KeyboardHandler::begin(Channel *digitalChannels) {
 	_toggleMasterStatus = false;
 }
 
-void KeyboardHandler::handleKeyboard() {
+bool KeyboardHandler::handleKeyboard() {
+	
 	 if (_keyboard.available()) {
 		char c = _keyboard.read();
-		handleKey(c);
+		return handleKey(c);
+	 } else {
+	 	 // If nothing is pressed, turn off any momentary keys 
+	 	 for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
+			if(_momentaryDOutStatus[x] == true) {
+				_digitalChannels[x].off();
+				_momentaryDOutStatus[x] = false;
+				Log.Debug("[KeyboardHandler] Momentary off '%d'"CR, x);
+			}
+		}
 	 }
 }
 	
-bool KeyboardHandler::handleKey(int key) {
-	Log.Debug("Got key '%c'"CR, key);
+bool KeyboardHandler::handleKey(char key) {
+	Log.Debug("[KeyboardHandler] Got key '%c'"CR, key);
 	bool keyFound=false;
 	
+	// Is it a digital channel key?
 	for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
 		if(key == _momentaryDOutKeys[x]) {
+			// Is it a momentary digital key?
 			keyFound=true;
 			if(_momentaryDOutStatus[x] == false) {
 				_digitalChannels[x].on();
 				_momentaryDOutStatus[x] = true;
+				Log.Debug("[KeyboardHandler] Momentary on '%d'"CR, x);
+			} else {
+				Log.Debug("[KeyboardHandler] Momentary already on '%d'"CR, x);
 			}
 		} else if(key == _toggleDOutKeys[x]) {
+		// Is it a toggle digital key?
 			keyFound=true;
+			Log.Debug("[KeyboardHandler] toggling '%d'"CR, x);
 			_digitalChannels[x].toggle();
-		}
+		}  
 	}
+	
+	
 	
 	return keyFound;
 }
