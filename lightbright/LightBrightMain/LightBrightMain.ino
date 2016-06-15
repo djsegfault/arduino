@@ -15,11 +15,11 @@
 #define LOGLEVEL LOG_LEVEL_VERBOSE
 
 // Globals
-Channel DigitalChannels[LBPIN_DOUT_COUNT];
-DigitalOutPin DigitalPins[LBPIN_DOUT_COUNT];
+Channel digitalChannels[LBPIN_DOUT_COUNT];
+DigitalOutPin digitalPins[LBPIN_DOUT_COUNT];
 
 #ifdef LBC_KEYBOARD
-PS2Keyboard keyboard;
+KeyboardHandler keyboardHandler;
 #endif
 
 void setup() {
@@ -29,22 +29,21 @@ void setup() {
 
   // Initialize digital outputs
   for (int x = 0; x < LBPIN_DOUT_COUNT; x++) {
-    DigitalPins[x].setPinNumber(LBPIN_DOUT_START + (x * LBPIN_DOUT_INTERVAL));
-    DigitalChannels[x].setPin(DigitalPins[x]);
-    DigitalChannels[x].setNumber(x+1);
-    Log.Info("Initialized digital channel %d to pin %d"CR, DigitalChannels[x].getNumber(), DigitalChannels[x].getPin().getPinNumber());
+    digitalPins[x].setPinNumber(LBPIN_DOUT_START + (x * LBPIN_DOUT_INTERVAL));
+    digitalChannels[x].setPin(digitalPins[x]);
+    digitalChannels[x].setNumber(x+1);
+    Log.Info("Initialized digital channel %d to pin %d"CR, digitalChannels[x].getNumber(), digitalChannels[x].getPin().getPinNumber());
   }
 
-
 #ifdef LBC_KEYBOARD
-  keyboard.begin(LBPIN_KBD_DATA, LBPIN_KBD_IRQ);
+  keyboardHandler.begin(digitalChannels);
 #endif
 }
 
 void loop() {
   
 #ifdef LBC_KEYBOARD
-  keyboardHandler();
+  keyboardHandler.handleKeyboard();
 #endif
 
 }
