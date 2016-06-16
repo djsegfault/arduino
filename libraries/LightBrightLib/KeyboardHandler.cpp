@@ -23,11 +23,7 @@ bool KeyboardHandler::handleKeyboard() {
 	 } else {
 	 	 // If nothing is pressed, turn off any momentary keys 
 	 	 for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
-			if(_momentaryDOutStatus[x] == true) {
-				_digitalChannels[x].off();
-				_momentaryDOutStatus[x] = false;
-				Log.Debug("[KeyboardHandler] Momentary off '%d'"CR, x);
-			}
+			clearMomentary(x);
 		}
 	 }
 }
@@ -46,18 +42,26 @@ bool KeyboardHandler::handleKey(char key) {
 				_momentaryDOutStatus[x] = true;
 				Log.Debug("[KeyboardHandler] Momentary on '%d'"CR, x);
 			} else {
-				Log.Debug("[KeyboardHandler] Momentary already on '%d'"CR, x);
+				Log.Verbose("[KeyboardHandler] Momentary already on '%d'"CR, x);
 			}
 		} else if(key == _toggleDOutKeys[x]) {
-		// Is it a toggle digital key?
+			// Is it a toggle digital key?
 			keyFound=true;
 			Log.Debug("[KeyboardHandler] toggling '%d'"CR, x);
 			_digitalChannels[x].toggle();
-		}  
+		} else {
+			// If this digital key is not being pressed, turn it off if it's on.
+			clearMomentary(x);
+		}
 	}
-	
-	
 	
 	return keyFound;
 }
 
+void KeyboardHandler::clearMomentary(int x) {
+	if(_momentaryDOutStatus[x] == true) {
+		_digitalChannels[x].off();
+		_momentaryDOutStatus[x] = false;
+		Log.Debug("[KeyboardHandler] Momentary off '%d'"CR, x);
+	}
+}

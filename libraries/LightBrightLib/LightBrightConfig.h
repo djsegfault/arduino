@@ -16,7 +16,7 @@
 
 ////// Pin assignments
 // Keyboard
-#define LBPIN_KBD_DATA 22
+#define LBPIN_KBD_DATA 53
 #define LBPIN_KBD_IRQ 3
 
 // Digital outputs

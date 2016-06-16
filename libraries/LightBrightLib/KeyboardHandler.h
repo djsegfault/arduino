@@ -22,6 +22,7 @@ class KeyboardHandler
 		bool handleKeyboard();
 		bool handleKey(char key);
 	protected:
+		void clearMomentary(int x);
 		Channel *_digitalChannels;
 		PS2Keyboard _keyboard;
 		char _momentaryDOutKeys[LBPIN_DOUT_COUNT]=LBKEY_DOUT_MOMENTARY;

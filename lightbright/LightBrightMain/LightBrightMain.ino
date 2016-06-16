@@ -12,7 +12,7 @@
 
 #include <Logging.h>
 
-#define LOGLEVEL LOG_LEVEL_VERBOSE
+#define LOGLEVEL LOG_LEVEL_DEBUG
 
 // Globals
 Channel digitalChannels[LBPIN_DOUT_COUNT];
