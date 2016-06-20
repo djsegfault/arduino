@@ -3,17 +3,10 @@
 
 #include "Pin.h"
 
-Pin::Pin() {
-}
-
-Pin::Pin(int pinNumber) : Pin(){
-	setPinNumber(pinNumber);
-	setMock(false);
-}
-
-void Pin::setPinNumber(int pinNumber) {
+void Pin::begin(int pinNumber) {
 	pinMode(pinNumber, OUTPUT);
 	_pinNumber = pinNumber;
+	setMock(false);
 }
 
 int Pin::getPinNumber() {
@@ -25,7 +18,7 @@ void Pin::setValue(int value) {
 	
 	Log.Verbose("Pin.SetValue %d --> %d mocked=%d"CR, _pinNumber, value, _isMock);	
 	if(! _isMock) {
-		_setPinValue(value);
+		setPinValue(value);
 	}		
 }	
 
@@ -41,11 +34,6 @@ void Pin::off() {
 	setValue(PIN_MIN_VALUE);
 }
 
-void Pin::_setPinValue(int value) {
-	// This method is child-specific.  It's virtual and must be overridden. 
-	// It's empty in this base class
-}
-
 void Pin::setMock(boolean value) {
 	_isMock = value;
 }
@@ -53,6 +41,7 @@ void Pin::setMock(boolean value) {
 int Pin::getMock() {
 	return _isMock;
 } 
+
 
 
 

@@ -16,22 +16,22 @@ void KeyboardHandler::begin(Channel *digitalChannels) {
 }
 
 bool KeyboardHandler::handleKeyboard() {
-	
-	 if (_keyboard.available()) {
+	//Log.Verbose("[KeyboardHandler] Looking for key"CR);
+	if (_keyboard.available()) {
 		char c = _keyboard.read();
 		return handleKey(c);
-	 } else {
-	 	 // If nothing is pressed, turn off any momentary keys 
-	 	 for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
+	} else {
+		// If nothing is pressed, turn off any momentary keys
+		for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
 			clearMomentary(x);
 		}
-	 }
+	}
 }
-	
+
 bool KeyboardHandler::handleKey(char key) {
 	Log.Debug("[KeyboardHandler] Got key '%c'"CR, key);
 	bool keyFound=false;
-	
+
 	// Is it a digital channel key?
 	for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
 		if(key == _momentaryDOutKeys[x]) {
@@ -54,7 +54,7 @@ bool KeyboardHandler::handleKey(char key) {
 			clearMomentary(x);
 		}
 	}
-	
+
 	return keyFound;
 }
 

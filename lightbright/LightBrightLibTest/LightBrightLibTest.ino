@@ -5,16 +5,18 @@
 
 #define TEST_PIN 13
 
-Pin testPin1(TEST_PIN);
+DigitalOutPin testPin1;
 
-DigitalOutPin testDOPin1(TEST_PIN);
-Channel testChannel1(testPin1);
+DigitalOutPin testDOPin1;
+Channel testChannel1;
+
 
 test(PinPin)
 {
-  Pin testPinL1(TEST_PIN);
+  DigitalOutPin testPinL1;
+  testPinL1.begin(TEST_PIN);
   assertEqual(TEST_PIN, testPinL1.getPinNumber());
-  testPinL1.setPinNumber(11);
+  testPinL1.begin(11);
   assertEqual(11, testPinL1.getPinNumber());
 }
 
@@ -50,43 +52,50 @@ test(DOPinOnOff)
 {
   testDOPin1.off();
   testDOPin1.on();
-  assertEqual(HIGH, testDOPin1.getValue());
+  assertEqual(PIN_MAX_VALUE, testDOPin1.getValue());
   testDOPin1.off();
-  assertEqual(LOW, testDOPin1.getValue());
+  assertEqual(PIN_MIN_VALUE, testDOPin1.getValue());
 }
 
 test(ChannelPin)
 {
-  assertEqual(TEST_PIN, testChannel1.getPin().getPinNumber());
+  Serial.print("TC1 ");
+  Serial.println(testPin1.getPinNumber() );
+
+  assertEqual(TEST_PIN, (*testChannel1.getPin()).getPinNumber());
 }
 
 test(ChannelLevel)
 {
-    testChannel1.setMasterLevel(PIN_MAX_VALUE);
-    testPin1.setDebug(true);
-    
-    testChannel1.setLevel(42);
-    assertEqual(42, testChannel1.getPin().getValue());
-    
-    testChannel1.setMasterLevel(128);
-    assertEqual(42 * ((float)128/(float)PIN_MAX_VALUE), testChannel1.getPin().getValue());
+  testChannel1.setMasterLevel(PIN_MAX_VALUE);
 
-    testChannel1.setMasterLevel(10);
-    assertEqual(42 * ((float)10/(float)PIN_MAX_VALUE), testChannel1.getPin().getValue());
+  testChannel1.setLevel(42);
+  assertEqual(42, (*testChannel1.getPin()).getValue());
 
-    testChannel1.off();
-    assertEqual(0, testChannel1.getPin().getValue());
+  testChannel1.setMasterLevel(128);
+  assertEqual(42 * ((float)128 / (float)PIN_MAX_VALUE), (*testChannel1.getPin()).getValue());
 
-    testChannel1.on();
-    assertEqual(10, testChannel1.getPin().getValue());
+  testChannel1.setMasterLevel(10);
+  assertEqual(42 * ((float)10 / (float)PIN_MAX_VALUE), (*testChannel1.getPin()).getValue());
 
-    testChannel1.setMasterLevel(100);
+  testChannel1.off();
+  assertEqual(0, (*testChannel1.getPin()).getValue());
+
+  testChannel1.on();
+  assertEqual(10, (*testChannel1.getPin()).getValue());
+
+  testChannel1.setMasterLevel(100);
 }
 
 
 void setup()
 {
   Serial.begin(9600);
+  Serial.println("In setup");
+  testPin1.begin(TEST_PIN);
+  testDOPin1.begin(TEST_PIN);
+  testChannel1.begin(&testPin1, 1);
+  assertEqual(1, 1);
 }
 
 void loop()

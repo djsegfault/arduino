@@ -18,11 +18,9 @@ class Channel
 {
   public:
     Channel();
-    Channel(Pin pin);
-    void setNumber(int channelNumber);
+    void begin(Pin *pin, int channelNumber);
     int getNumber();
-    void setPin(Pin pin);
-    Pin getPin();
+    Pin* getPin();
     void setLevel(int level);
     int getLevel();
     void on();
@@ -31,7 +29,7 @@ class Channel
     void setMasterLevel(int level);
   protected:
   	int _channelNumber;
-    Pin _pin;
+    Pin *_pin;
     int _level;
     int _masterLevel;
     int _effectiveLevel;
@@ -39,4 +37,5 @@ class Channel
 };
 
 #endif
+
 

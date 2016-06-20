@@ -16,9 +16,7 @@
 class Pin
 {
   public:
-  	Pin();
-    Pin(int pinNumber);
-    void setPinNumber(int pinNumber);
+    void begin(int pinNumber);
     int getPinNumber();
     void setValue(int value);
     int getValue();
@@ -32,7 +30,7 @@ class Pin
     boolean _isMock;
     
     // This method is child-specific. It's empty in this base class
-    virtual void _setPinValue(int value);
+    virtual void setPinValue(int value)=0;
 };
 
 #endif

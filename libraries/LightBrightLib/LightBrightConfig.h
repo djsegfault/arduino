@@ -21,7 +21,7 @@
 
 // Digital outputs
 #define LBPIN_DOUT_START 22         // First pin
-#define LBPIN_DOUT_INTERVAL 2   // 1 for every pin, 2 for every other pin (
+#define LBPIN_DOUT_INTERVAL 1   // 1 for every pin, 2 for every other pin (
                                 // eg where odd pins are in one row and even pins are in the other)
 #define LBPIN_DOUT_COUNT 8      // How many digital outputs are there?                                
 
@@ -33,8 +33,6 @@
 #define LBKEY_DOUT_TOGGLE {'a','s','d','f','g','h','j','k'}
 #define LBKEY_MASTER_MOMENTARY '.'
 #define LBKEY_MASTER_TOGGLE 'l'
-
-
 
 
 
