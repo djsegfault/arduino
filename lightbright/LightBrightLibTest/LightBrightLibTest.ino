@@ -62,7 +62,7 @@ test(ChannelPin)
   Serial.print("TC1 ");
   Serial.println(testPin1.getPinNumber() );
 
-  assertEqual(TEST_PIN, (*testChannel1.getPin()).getPinNumber());
+  assertEqual(TEST_PIN, testChannel1.getPin()->getPinNumber());
 }
 
 test(ChannelLevel)
@@ -73,16 +73,16 @@ test(ChannelLevel)
   assertEqual(42, (*testChannel1.getPin()).getValue());
 
   testChannel1.setMasterLevel(128);
-  assertEqual(42 * ((float)128 / (float)PIN_MAX_VALUE), (*testChannel1.getPin()).getValue());
+  assertEqual(42 * ((float)128 / (float)PIN_MAX_VALUE), testChannel1.getPin()->getValue());
 
   testChannel1.setMasterLevel(10);
-  assertEqual(42 * ((float)10 / (float)PIN_MAX_VALUE), (*testChannel1.getPin()).getValue());
+  assertEqual(42 * ((float)10 / (float)PIN_MAX_VALUE), testChannel1.getPin()->getValue());
 
   testChannel1.off();
-  assertEqual(0, (*testChannel1.getPin()).getValue());
+  assertEqual(0, testChannel1.getPin()->getValue());
 
   testChannel1.on();
-  assertEqual(10, (*testChannel1.getPin()).getValue());
+  assertEqual(10, testChannel1.getPin()->getValue());
 
   testChannel1.setMasterLevel(100);
 }
