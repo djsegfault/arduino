@@ -15,10 +15,10 @@
 #define LOGLEVEL LOG_LEVEL_DEBUG
 
 // Globals
-int a;
-
 Channel digitalChannels[LBPIN_DOUT_COUNT];
 DigitalOutPin digitalPins[LBPIN_DOUT_COUNT];
+
+DigitalOutPin *dpins;
 
 #ifdef LBC_KEYBOARD
 KeyboardHandler keyboardHandler;
@@ -34,8 +34,14 @@ void setup() {
   for (int x = 0; x < LBPIN_DOUT_COUNT; x++) {
     digitalPins[x].begin(LBPIN_DOUT_START + (x * LBPIN_DOUT_INTERVAL));
     digitalChannels[x].begin(&digitalPins[x], x+1);
-    Log.Info("Initialized digital channel %d to pin %d"CR, digitalChannels[x].getNumber(), (*digitalChannels[x].getPin()).getPinNumber());
+    Log.Info("Initialized digital channel %d to pin %d"CR, digitalChannels[x].getNumber(), digitalChannels[x].getPin()->getPinNumber());
   }
+
+  // example code to be removed 
+  dpins = digitalPins;
+  int dpinm = digitalPins[3].getPinNumber();
+  int dpinn = dpins[3].getPinNumber();
+  
 
 #ifdef LBC_KEYBOARD
   keyboardHandler.begin(digitalChannels);
