@@ -9,16 +9,20 @@
 #include "Channel.h"
 #include "KeyboardHandler.h"
 #include "SerialHandler.h"
+#include "LightBoard.h"
 
 #include <Logging.h>
 
 #define LOGLEVEL LOG_LEVEL_DEBUG
 
 // Globals
+LightBoard lightBoard;
+
+Channel masterChannel;
+
 Channel digitalChannels[LBPIN_DOUT_COUNT];
 DigitalOutPin digitalPins[LBPIN_DOUT_COUNT];
 
-DigitalOutPin *dpins;
 
 #ifdef LBC_KEYBOARD
 KeyboardHandler keyboardHandler;
@@ -37,16 +41,13 @@ void setup() {
     Log.Info("Initialized digital channel %d to pin %d"CR, digitalChannels[x].getNumber(), digitalChannels[x].getPin()->getPinNumber());
   }
 
-  // example code to be removed 
-  dpins = digitalPins;
-  int dpinm = digitalPins[3].getPinNumber();
-  int dpinn = dpins[3].getPinNumber();
-  
+  lightBoard.begin(digitalChannels, digitalChannels, &masterChannel);
+
 
 #ifdef LBC_KEYBOARD
-  keyboardHandler.begin(digitalChannels);
+  keyboardHandler.begin(&lightBoard);
 #endif
-  serialHandler.begin(digitalChannels);
+  serialHandler.begin(&lightBoard);
 
 
 }

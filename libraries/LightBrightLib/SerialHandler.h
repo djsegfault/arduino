@@ -11,17 +11,18 @@
 
 #include "Arduino.h"
 #include "LightBrightConfig.h"
+#include "LightBoard.h"
 #include "Channel.h"
 
 
 class SerialHandler
 {
 	public:
-		void begin(Channel *digitalChannels);
+		void begin(LightBoard *lightBoard);
 		bool handleSerial();
 		bool handleKey(char key);
 	protected:
-		Channel *_digitalChannels;
+		LightBoard *_lightBoard;
 };	
 
 #endif

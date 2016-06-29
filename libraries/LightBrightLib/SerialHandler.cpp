@@ -4,11 +4,12 @@
 #include "SerialHandler.h"
 
 
-void SerialHandler::begin(Channel *digitalChannels) {
-	_digitalChannels = digitalChannels;
+void SerialHandler::begin(LightBoard *lightBoard) {
+	_lightBoard = lightBoard;
 	pinMode(13, OUTPUT);
 
 }
+
 bool SerialHandler::handleSerial() {
 
 	if (Serial.available() > 0) {
@@ -17,6 +18,6 @@ bool SerialHandler::handleSerial() {
 
 		// say what you got:
 		Serial.print("I received Serial input ");
-		_digitalChannels[0].toggle();
+		_lightBoard->getDigitalChannel(0)->toggle();
 	}
 }

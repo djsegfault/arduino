@@ -11,6 +11,7 @@
 
 #include "Arduino.h"
 #include "LightBrightConfig.h"
+#include "LightBoard.h"
 #include "PS2Keyboard.h"
 #include "Channel.h"
 
@@ -18,12 +19,12 @@
 class KeyboardHandler
 {
 	public:
-		void begin(Channel *digitalChannels);
+		void begin(LightBoard *lightBoard);
 		bool handleKeyboard();
 		bool handleKey(char key);
 	protected:
 		void clearMomentary(int x);
-		Channel *_digitalChannels;
+		LightBoard *_lightBoard;
 		PS2Keyboard _keyboard;
 		char _momentaryDOutKeys[LBPIN_DOUT_COUNT]=LBKEY_DOUT_MOMENTARY;
 		char _toggleDOutKeys[LBPIN_DOUT_COUNT]=LBKEY_DOUT_TOGGLE;

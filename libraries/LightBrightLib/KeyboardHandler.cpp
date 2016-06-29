@@ -3,8 +3,8 @@
 
 #include "KeyboardHandler.h"
 
-void KeyboardHandler::begin(Channel *digitalChannels) {
-	_digitalChannels = digitalChannels;
+void KeyboardHandler::begin(LightBoard *lightBoard) {
+	_lightBoard = lightBoard;
 	_keyboard.begin(LBPIN_KBD_DATA, LBPIN_KBD_IRQ);
 
 	for(int x=0; x<LBPIN_DOUT_COUNT; x++) {
@@ -38,7 +38,7 @@ bool KeyboardHandler::handleKey(char key) {
 			// Is it a momentary digital key?
 			keyFound=true;
 			if(_momentaryDOutStatus[x] == false) {
-				_digitalChannels[x].on();
+				_lightBoard->getDigitalChannel(x)->on();
 				_momentaryDOutStatus[x] = true;
 				Log.Debug("[KeyboardHandler] Momentary on '%d'"CR, x);
 			} else {
@@ -48,7 +48,7 @@ bool KeyboardHandler::handleKey(char key) {
 			// Is it a toggle digital key?
 			keyFound=true;
 			Log.Debug("[KeyboardHandler] toggling '%d'"CR, x);
-			_digitalChannels[x].toggle();
+			_lightBoard->getDigitalChannel(x)->toggle();
 		} else {
 			// If this digital key is not being pressed, turn it off if it's on.
 			clearMomentary(x);
@@ -60,7 +60,7 @@ bool KeyboardHandler::handleKey(char key) {
 
 void KeyboardHandler::clearMomentary(int x) {
 	if(_momentaryDOutStatus[x] == true) {
-		_digitalChannels[x].off();
+		_lightBoard->getDigitalChannel(x)->off();
 		_momentaryDOutStatus[x] = false;
 		Log.Debug("[KeyboardHandler] Momentary off '%d'"CR, x);
 	}
