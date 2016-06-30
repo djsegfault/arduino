@@ -1,15 +1,18 @@
 /*
-  KeyboardHandler.h - LightBrightLib - Library for controlling lights.
-  Created by David Kramer.
-  Released into the public domain.
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
   
+  KeyboardHandler.h
   Handles input from PS/2 keyboard
   Expects configurable declarations to be done in LightBrightConfig.h
 */
+
 #ifndef KeyboardHandler_h
 #define KeyboardHandler_h
 
 #include "Arduino.h"
+#include "Logging.h"
 #include "LightBrightConfig.h"
 #include "LightBoard.h"
 #include "PS2Keyboard.h"

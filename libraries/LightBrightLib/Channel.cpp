@@ -1,3 +1,14 @@
+/*
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+
+  Channel.cpp
+  This is the abstract Channel class that enables all the channel types to be
+  in one collection, like an array.  It also defines all the common functionality.
+*/
+
+
 #include "Arduino.h"
 #include "Logging.h"
 

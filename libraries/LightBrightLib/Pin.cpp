@@ -1,5 +1,11 @@
-#include "Arduino.h"
-#include "Logging.h"
+/*
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+
+  Pin.cpp
+  Base class that interfaces with a input or output pin
+*/
 
 #include "Pin.h"
 

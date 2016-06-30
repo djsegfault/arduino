@@ -1,11 +1,14 @@
 /*
-  SerialHandler.h - LightBrightLib - Library for controlling lights.
-  Created by David Kramer.
-  Released into the public domain.
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
   
-  Handles input from PS/2 Serial
-  Expects configurable declarations to be done in LightBrightConfig.h
+  Serialhandler.h
+  Handles serial communications
+  NOTE This is a stub implementation, 
+  Eventually I will have a command processor and DSM this will call
 */
+
 #ifndef SerialHandler_h
 #define SerialHandler_h
 

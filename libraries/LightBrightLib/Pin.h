@@ -1,14 +1,17 @@
 /*
-  Pin.h - LightBrightLib - Library for controlling lights.
-  Created by David Kramer.
-  Released into the public domain.
-  
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+
+  Pin.h  
   Base class that interfaces with a input or output pin
 */
+
 #ifndef Pin_h
 #define Pin_h
 
 #include "Arduino.h"
+#include "Logging.h"
 
 #define PIN_MIN_VALUE 0
 #define PIN_MAX_VALUE 255

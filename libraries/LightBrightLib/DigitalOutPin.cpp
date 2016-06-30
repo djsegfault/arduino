@@ -1,6 +1,12 @@
-
-#include "Arduino.h"
-#include "Logging.h"
+/*
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+  
+  DigitalOutPin.cpp
+  Digital output pin handler, parent is Pin
+*/
+ 
 #include "DigitalOutPin.h"
 
 // For Digital, it's just on or off

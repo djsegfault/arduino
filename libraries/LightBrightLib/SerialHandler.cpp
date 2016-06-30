@@ -1,5 +1,13 @@
-#include "Arduino.h"
-#include "Logging.h"
+/*
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+  
+  Serialhandler.cpp
+  Handles serial communications
+  NOTE This is a stub implementation, 
+  Eventually I will have a command processor and DSM this will call
+*/
 
 #include "SerialHandler.h"
 

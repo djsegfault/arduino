@@ -1,8 +1,9 @@
 /*
-  LightBrightConfig.h - LightBrightLib - Library for controlling lights.
-  Created by David Kramer.
-  Released into the public domain.
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
 
+  LightBrightConfig.h
   This is a collection of configuration variables and constants that
   you may want to change specific to your usage of the library.  It
   has pin assignments, feature switches, etc.

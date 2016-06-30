@@ -1,5 +1,12 @@
-#include "Arduino.h"
-#include "Logging.h"
+/*
+  MIT License   Copyright (c) 2016 David Kramer
+  LightBrightLib - Library for controlling lights.
+  https://github.com/djsegfault/arduino/wiki/Project-LightBright
+  
+  KeyboardHandler.cpp
+  Handles input from PS/2 keyboard
+  Expects configurable declarations to be done in LightBrightConfig.h
+*/
 
 #include "KeyboardHandler.h"
 
