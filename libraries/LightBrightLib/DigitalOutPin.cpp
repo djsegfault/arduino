@@ -11,12 +11,12 @@
 
 // For Digital, it's just on or off
 void DigitalOutPin::setPinValue(int value) {
-	Log.Verbose("DigitalOutPin %d -> %d"CR, _pinNumber,value);
+	Log.Verbose("DigitalOutPin CALLED"CR);
 	if(value == PIN_MIN_VALUE) {
-		Log.Verbose("DigitalOutPin %d -> HIGH"CR, _pinNumber);
+		Log.Verbose("DigitalOutPin %d -> %d -> HIGH"CR, value, _pinNumber);
 		digitalWrite(_pinNumber, LOW);
 	} else {
-	Log.Verbose("DigitalOutPin %d -> LOW"CR, _pinNumber);
+		Log.Verbose("DigitalOutPin %d -> %d -> LOW"CR, value, _pinNumber);
 		digitalWrite(_pinNumber, HIGH);
 	}
 }

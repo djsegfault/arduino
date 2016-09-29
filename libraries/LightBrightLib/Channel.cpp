@@ -16,12 +16,14 @@
 #include "Pin.h"
 
 Channel::Channel() {
-	setMasterLevel(PIN_MAX_VALUE);
 }
 
-void Channel::begin(Pin *pin, int channelNumber) {
+
+void Channel::begin(Pin *pin, int channelNumber, Channel *masterChannel) {
 	_pin = pin;
 	_channelNumber = channelNumber;
+	_masterChannel = masterChannel;
+	_level = PIN_MIN_VALUE;
 }
 
 int Channel::getNumber() {
@@ -59,17 +61,16 @@ void Channel::toggle() {
 	}
 }
 
-void Channel::setMasterLevel(int level) {
-	_masterLevel = level;
-	_updateEffectiveLevel();
-}
-	
-
 void Channel::_updateEffectiveLevel() {	
 	float divisor = (float) (PIN_MAX_VALUE - PIN_MIN_VALUE);
-	_effectiveLevel = (int) (_level * ( (float) _masterLevel / divisor ) );
+	_effectiveLevel = (int) (_level * ( (float) _masterChannel->getLevel() / divisor ) );
 	
-	Log.Debug("Channel %d pin %d level=%d master=%d effective=%d"CR, _channelNumber, _pin->getPinNumber(), _level, _masterLevel, _effectiveLevel);
+	Log.Debug("Channel %d pin %d level=%d master=%d effective=%d"CR, 
+			_channelNumber, 
+			_pin->getPinNumber(), 
+			_level, 
+			_masterChannel->getLevel(), 
+			_effectiveLevel);
 	_pin->setValue(_effectiveLevel);
 }
 

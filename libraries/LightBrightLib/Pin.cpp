@@ -10,8 +10,8 @@
 #include "Pin.h"
 
 void Pin::begin(int pinNumber) {
-	pinMode(pinNumber, OUTPUT);
 	_pinNumber = pinNumber;
+	pinMode(_pinNumber, OUTPUT);
 	setMock(false);
 }
 

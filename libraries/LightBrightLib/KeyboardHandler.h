@@ -29,13 +29,13 @@ class KeyboardHandler
 		void clearMomentary(int x);
 		LightBoard *_lightBoard;
 		PS2Keyboard _keyboard;
-		char _momentaryDOutKeys[LBPIN_DOUT_COUNT]=LBKEY_DOUT_MOMENTARY;
-		char _toggleDOutKeys[LBPIN_DOUT_COUNT]=LBKEY_DOUT_TOGGLE;
+		char _momentaryKeys[LBCHANNEL_COUNT]=LBKEY_MOMENTARY;   // Needed so we can treat it as a char array
+		char _toggleKeys[LBCHANNEL_COUNT]=LBKEY_TOGGLE;         // Needed so we can treat it as a char array
 		char _momentaryMasterKey=LBKEY_MASTER_MOMENTARY;
 		char _toggleMasterKey=LBKEY_MASTER_TOGGLE;
 		
-		bool _momentaryDOutStatus[LBPIN_DOUT_COUNT];
-		bool _toggleDOutStatus[LBPIN_DOUT_COUNT];
+		bool _momentaryStatus[LBCHANNEL_COUNT];
+		bool _toggleStatus[LBCHANNEL_COUNT];
 		bool _momentaryMasterStatus;
 		bool _toggleMasterStatus;
 };

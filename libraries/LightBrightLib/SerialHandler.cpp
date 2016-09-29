@@ -14,8 +14,6 @@
 
 void SerialHandler::begin(LightBoard *lightBoard) {
 	_lightBoard = lightBoard;
-	pinMode(13, OUTPUT);
-
 }
 
 bool SerialHandler::handleSerial() {
@@ -26,6 +24,6 @@ bool SerialHandler::handleSerial() {
 
 		// say what you got:
 		Serial.print("I received Serial input ");
-		_lightBoard->getDigitalChannel(0)->toggle();
+		_lightBoard->getChannel(0)->toggle();
 	}
 }

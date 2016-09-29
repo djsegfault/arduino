@@ -19,7 +19,7 @@ class Channel
 {
   public:
     Channel();
-    void begin(Pin *pin, int channelNumber);
+    void begin(Pin *pin, int channelNumber, Channel *masterChannel);
     int getNumber();
     Pin* getPin();
     void setLevel(int level);
@@ -27,12 +27,11 @@ class Channel
     void on();
     void off();
     void toggle();
-    void setMasterLevel(int level);
   protected:
   	int _channelNumber;
     Pin *_pin;
+    Channel *_masterChannel;
     int _level;
-    int _masterLevel;
     int _effectiveLevel;
     void _updateEffectiveLevel();
 };
