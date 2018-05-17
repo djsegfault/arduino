@@ -2,19 +2,19 @@
 #define MODE_NOTHING 0
 #define MODE_COLORCYCLE 1
 #define MODE_FLASHLIGHT 2
-#define MAX_MODE 2
+#define MAX_MODE 3
 
 // Speeds (smaller is faster)
 // TODO: Refactor as 1 to 10 and scale where needed
 #define SPEED_DEFAULT 20
 #define SPEED_MAX 200
 #define SPEED_MIN 1
-#define SPEED_DELTA 1
+#define SPEED_DELTA 5
 
 
 // Switches
-#define CAP_THRESHOLD    300  // Threshold for a capacitive touch (higher = less sensitive).
-#define CAP_SAMPLES      20   // Number of samples to take for a capacitive touch read.
+#define CAP_THRESHOLD    500  // Threshold for a capacitive touch (higher = less sensitive).
+#define CAP_SAMPLES      50   // Number of samples to take for a capacitive touch read.
 // See https://cdn-learn.adafruit.com/assets/assets/000/047/156/large1024/circuit_playground_Adafruit_Circuit_Playground_Express_Pinout.png?1507829017
 #define CAP_SWITCH_A7    1
 #define CAP_SWITCH_A6    0

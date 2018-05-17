@@ -5,13 +5,14 @@
 #include "flashlightMode.h"
 #include "colorCycleMode.h"
 #include "nothingMode.h"
+#include "sparkleMode.h"
 
 
 // Mode changing:  All of these are parallel arrays
 // Array of setup functions for each mode
-static void (*modeSetups[])(void) = {nothingSetup, colorCycleSetup, flashlightSetup};
-static void (*modeLoops[])(void) = {nothingLoop, colorCycleLoop, flashlightLoop};
-static int capSwitchModes[] = { CAP_SWITCH_A4, CAP_SWITCH_A5, CAP_SWITCH_A6 };
+static void (*modeSetups[])(void) = {nothingSetup, colorCycleSetup, flashlightSetup, sparkleSetup};
+static void (*modeLoops[])(void) = {nothingLoop, colorCycleLoop, flashlightLoop, sparkleLoop};
+static int capSwitchModes[] = { CAP_SWITCH_A4, CAP_SWITCH_A5, CAP_SWITCH_A6, CAP_SWITCH_A7 };
 
 void setup() {
   // Initialize serial port and circuit playground library.
