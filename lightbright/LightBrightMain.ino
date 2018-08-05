@@ -8,7 +8,7 @@
 */
 
 // Third-party headers
-# #include <PS2Keyboard.h>
+#include <PS2Keyboard.h>
 
 
 
@@ -22,8 +22,6 @@
 #include "LightBoard.h"
 
 #include <Logging.h>
-
-#define LOGLEVEL LOG_LEVEL_DEBUG
 
 // Globals
 LightBoard lightBoard;
