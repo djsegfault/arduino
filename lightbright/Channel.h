@@ -25,7 +25,9 @@ class Channel
     void setLevel(int level);
     int getLevel();
     void on();
+    int isOn();
     void off();
+    int isOff();
     void toggle();
   protected:
   	int _channelNumber;

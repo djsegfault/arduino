@@ -37,8 +37,19 @@
 #define LBPIN_AOUT_INTERVAL 1    // 1 for every pin, 2 for every other pin (Should always be 1)
 #define LBPIN_AOUT_COUNT 4       // How many analog outputs are there?
 
+// RGB PWM pins
+#define LBPIN_RGB_RED 4
+#define LBPIN_RGB_GREEN 5
+#define LBPIN_RGB_BLUE 6
+
 ////// Channels
 #define LBCHANNEL_COUNT 12       // Must be LBPIN_DOUT_COUNT + LBPIN_AOUT_COUNT
+
+// Bluetooth on Serial 2
+#define LBPIN_BTH_TX 16
+#define LBPIN_BTH_RX 17
+#define LBPIN_BTH_KEY 32
+#define LBPIN_BTH_STATE 33
 
 
 // Other configuration settings
@@ -50,6 +61,22 @@
 #define LBKEY_MASTER_MOMENTARY '/'
 #define LBKEY_MASTER_TOGGLE ';'
 
+// RGB lighting configuration
+#define LB_RGB_COUNT 1
+#define LBRGB_RED 0
+#define LBRGB_GREEN 1
+#define LBRGB_BLUE 2
+#define FADESPEED 5
 
+
+// Sound
+#define LBPIN_SOUND_RESET 30
+#define LBPIN_SOUND_STROBE 31
+#define LBPIN_SOUND_LEFT A14
+#define LBPIN_SOUND_RIGHT A15
+#define LBSOUND_MINVALUE 20
+
+// Bluetooth on Serial 2
+#define LBBTH_SERIAL_PORT Serial2
 
 #endif

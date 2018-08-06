@@ -23,7 +23,7 @@ class KeyboardHandler
 {
 	public:
 		void begin(LightBoard *lightBoard);
-		bool handleKeyboard();
+		char checkKeyboard();
 		bool handleKey(char key);
 	protected:
 		void clearMomentary(int x);

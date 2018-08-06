@@ -23,19 +23,14 @@ void KeyboardHandler::begin(LightBoard *lightBoard) {
 	_toggleMasterStatus = false;
 }
 
-bool KeyboardHandler::handleKeyboard() {
+char KeyboardHandler::checkKeyboard() {
 	Log.Verbose("[KeyboardHandler] Looking for key"CR);
+	char key = 0;
 	if (_keyboard.available()) {
-		char c = _keyboard.read();
-		return handleKey(c);
-	} else {
-		// If nothing is pressed, turn off any momentary keys
-		// TODO: This REALLY needs to be debounced.  Maybe a counter and only clear after so many !available() ?
-		Log.Verbose("[KeyboardHandler] Nothing pressed so clearing all momentary"CR);
-		for(int x=0; x<LBCHANNEL_COUNT; x++) {
-			clearMomentary(x);
-		}
+		key = _keyboard.read();
 	}
+
+	return key;
 }
 
 bool KeyboardHandler::handleKey(char key) {

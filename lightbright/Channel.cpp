@@ -16,6 +16,11 @@
 #include "Pin.h"
 
 Channel::Channel() {
+	_pin = 0;
+	_channelNumber = 0;
+	_masterChannel = NULL;
+	_level = PIN_MIN_VALUE;
+	_effectiveLevel = PIN_MIN_VALUE;
 }
 
 
@@ -23,7 +28,6 @@ void Channel::begin(Pin *pin, int channelNumber, Channel *masterChannel) {
 	_pin = pin;
 	_channelNumber = channelNumber;
 	_masterChannel = masterChannel;
-	_level = PIN_MIN_VALUE;
 }
 
 int Channel::getNumber() {
@@ -51,6 +55,22 @@ void Channel::on() {
 void Channel::off() {
 	_level = PIN_MIN_VALUE;
 	_updateEffectiveLevel();
+}
+
+int Channel::isOn() {
+	if(_level == PIN_MAX_VALUE)  {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+int Channel::isOff() {
+	if(_level == PIN_MIN_VALUE)  {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void Channel::toggle() {
