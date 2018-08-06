@@ -2,7 +2,7 @@
 //This is a automatic generated file
 //Please do not modify this file
 //If you touch this file your change will be overwritten during the next build
-//This file has been generated on 2018-08-06 03:15:35
+//This file has been generated on 2018-08-06 04:02:03
 
 #include "Arduino.h"
 #include <PS2Keyboard.h>
@@ -19,6 +19,7 @@
 
 void setup() ;
 int handleKey(char key) ;
+void handleCommand() ;
 void clearMomentaryKey(int x) ;
 void loop() ;
 

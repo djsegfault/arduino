@@ -56,7 +56,8 @@ SerialHandler serialHandler;
 
 BluetoothHandler bluetoothHandler;
 
-
+// Used for building commands
+char commandBuffer[LB_COMMAND_MAX_LENGTH];
 
 void setup() {
 	Log.Init(LOGLEVEL, 9600L);
@@ -104,8 +105,11 @@ void setup() {
 #ifdef LBC_KEYBOARD
 	keyboardHandler.begin(&lightBoard);
 #endif
-serialHandler.begin(&lightBoard);
-bluetoothHandler.begin();
+	serialHandler.begin(&lightBoard);
+	bluetoothHandler.begin();
+
+	// Initialize command buffer
+	commandBuffer[0]=NULL;
 
 
 }
@@ -114,45 +118,63 @@ int handleKey(char key) {
 	Log.Debug("Got key '%c' "CR, key);
 	bool keyFound=false;
 
-	// Is it a channel key?
-	for(int x=0; x< LBCHANNEL_COUNT; x++) {
-		if(key == momentaryKeys[x]) {
-			// Is it a momentary digital key?
-			keyFound=true;
-			if(momentaryStatus[x] == false) {
-				lightBoard.getChannel(x)->on();
-				momentaryStatus[x] = true;
-				Log.Debug("[KeyboardHandler] Momentary on '%d'"CR, lightBoard.getChannel(x)->getNumber());
-			} else {
-				Log.Verbose("[KeyboardHandler] Momentary already on '%d'"CR, lightBoard.getChannel(x)->getNumber());
+	// Are we building a command? Or is the the command start key?
+	if(commandBuffer[0] != 0 || key == LBKEY_COMMAND_START) {
+		if(strlen(commandBuffer) < LB_COMMAND_MAX_LENGTH) {
+			commandBuffer[strlen(commandBuffer)] = key;
+			commandBuffer[strlen(commandBuffer) + 1] = NULL;
+			Log.Debug("Command is now '%s'"CR, commandBuffer);
+
+			if(key == LBKEY_COMMAND_END) {
+				handleCommand();
 			}
-		} else if(key == toggleKeys[x]) {
-			// Is it a toggle digital key?
+		} else {
+			Log.Error("Command '%s' to long, abandoning"CR, commandBuffer);
+			commandBuffer[0] =  NULL;
+		}
+		keyFound=true;
+	} else {
+
+		// Is it a channel key?
+		for(int x=0; x< LBCHANNEL_COUNT; x++) {
+			if(key == momentaryKeys[x]) {
+				// Is it a momentary digital key?
+				keyFound=true;
+				if(momentaryStatus[x] == false) {
+					lightBoard.getChannel(x)->on();
+					momentaryStatus[x] = true;
+					Log.Debug("[KeyboardHandler] Momentary on '%d'"CR, lightBoard.getChannel(x)->getNumber());
+				} else {
+					Log.Verbose("[KeyboardHandler] Momentary already on '%d'"CR, lightBoard.getChannel(x)->getNumber());
+				}
+			} else if(key == toggleKeys[x]) {
+				// Is it a toggle digital key?
+				keyFound=true;
+				Log.Debug("[KeyboardHandler] toggling '%d'"CR, lightBoard.getChannel(x)->getNumber());
+				lightBoard.getChannel(x)->toggle();
+			} else {
+				// If this channel's keys are not being pressed, turn it off if it's on.
+				Log.Verbose("[KeyboardHandler] Momemtary not being pressed, so clearing '%d'"CR, lightBoard.getChannel(x)->getNumber());
+				clearMomentaryKey(x);
+			}
+		}
+
+		if(! keyFound && key == LBKEY_MASTER_MOMENTARY) {
 			keyFound=true;
-			Log.Debug("[KeyboardHandler] toggling '%d'"CR, lightBoard.getChannel(x)->getNumber());
-			lightBoard.getChannel(x)->toggle();
-		} else {
-			// If this channel's keys are not being pressed, turn it off if it's on.
-			Log.Verbose("[KeyboardHandler] Momemtary not being pressed, so clearing '%d'"CR, lightBoard.getChannel(x)->getNumber());
-			clearMomentaryKey(x);
+			if(momentaryMasterStatus == false) {
+				lightBoard.getMasterChannel()->on();
+				momentaryMasterStatus = true;
+				Log.Debug("[KeyboardHandler] Momentary on Master"CR);
+			} else {
+				Log.Verbose("[KeyboardHandler] Momentary Master already on"CR);
+			}
 		}
-	}
 
-	if(! keyFound && key == LBKEY_MASTER_MOMENTARY) {
-		keyFound=true;
-		if(momentaryMasterStatus == false) {
-			lightBoard.getMasterChannel()->on();
-			momentaryMasterStatus = true;
-			Log.Debug("[KeyboardHandler] Momentary on Master"CR);
-		} else {
-			Log.Verbose("[KeyboardHandler] Momentary Master already on"CR);
+		if(! keyFound && key == LBKEY_MASTER_TOGGLE) {
+			keyFound=true;
+			Log.Debug("[KeyboardHandler] toggling Master"CR);
+			lightBoard.getMasterChannel()->toggle();
 		}
-	}
-
-	if(! keyFound && key == LBKEY_MASTER_TOGGLE) {
-		keyFound=true;
-		Log.Debug("[KeyboardHandler] toggling Master"CR);
-		lightBoard.getMasterChannel()->toggle();
 	}
 
 
@@ -161,6 +183,11 @@ int handleKey(char key) {
 	}
 
 	return keyFound;
+}
+
+void handleCommand() {
+	Log.Info("Processing command '%s'"CR, commandBuffer);
+	commandBuffer[0] = NULL;
 }
 
 void clearMomentaryKey(int x) {

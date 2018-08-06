@@ -13,7 +13,7 @@
 #define LightBrightConfig_h
 
 ////// Current debugging level
-#define LOGLEVEL LOG_LEVEL_VERBOSE
+#define LOGLEVEL LOG_LEVEL_DEBUG
 
 ////// Feature switches.  Uncomment to enable the feature.
 #define LBC_KEYBOARD YES
@@ -60,6 +60,8 @@
 #define LBKEY_TOGGLE {'a','s','d','f','g','h','j','k','1','2','3','4'}
 #define LBKEY_MASTER_MOMENTARY '/'
 #define LBKEY_MASTER_TOGGLE ';'
+#define LBKEY_COMMAND_START '#'
+#define LBKEY_COMMAND_END '~'
 
 // RGB lighting configuration
 #define LB_RGB_COUNT 1
@@ -78,5 +80,8 @@
 
 // Bluetooth on Serial 2
 #define LBBTH_SERIAL_PORT Serial2
+
+// Maximum command length
+#define LB_COMMAND_MAX_LENGTH 80
 
 #endif
