@@ -22,7 +22,7 @@ class SerialHandler
 {
 	public:
 		void begin(LightBoard *lightBoard);
-		bool handleSerial();
+		bool checkSerial();
 		bool handleKey(char key);
 	protected:
 		LightBoard *_lightBoard;

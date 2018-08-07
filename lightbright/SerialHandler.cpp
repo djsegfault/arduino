@@ -16,7 +16,7 @@ void SerialHandler::begin(LightBoard *lightBoard) {
 	_lightBoard = lightBoard;
 }
 
-bool SerialHandler::handleSerial() {
+bool SerialHandler::checkSerial() {
 
 	if (Serial.available() > 0) {
 		// read the incoming byte:

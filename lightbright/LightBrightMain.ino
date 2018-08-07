@@ -108,10 +108,7 @@ void setup() {
 	serialHandler.begin(&lightBoard);
 	bluetoothHandler.begin();
 
-	// Initialize command buffer
-	commandBuffer[0]=NULL;
-
-
+	commandBuffer[0]=0;
 }
 
 int handleKey(char key) {
@@ -120,6 +117,7 @@ int handleKey(char key) {
 
 	// Are we building a command? Or is the the command start key?
 	if(commandBuffer[0] != 0 || key == LBKEY_COMMAND_START) {
+		Log.Debug("Adding to command, first char is %d length=%d Command before is '%s'"CR, commandBuffer[0], strlen(commandBuffer), commandBuffer);
 		if(strlen(commandBuffer) < LB_COMMAND_MAX_LENGTH) {
 			commandBuffer[strlen(commandBuffer)] = key;
 			commandBuffer[strlen(commandBuffer) + 1] = NULL;
@@ -187,7 +185,40 @@ int handleKey(char key) {
 
 void handleCommand() {
 	Log.Info("Processing command '%s'"CR, commandBuffer);
-	commandBuffer[0] = NULL;
+	if(commandBuffer[1]=='R') {
+		// RGB command
+		if(commandBuffer[2]=='M') {
+			// Set mode
+			if(commandBuffer[3]=='N') {
+				rgb.setMode(RGBOutput::NONE);
+			} else if(commandBuffer[3]=='M') {
+				rgb.setMode(RGBOutput::MUSIC);
+			}
+		} else if(commandBuffer[2]=='C') {
+			//set color
+			if(commandBuffer[3]=='K') {
+				rgb.setColor(RGBOutput::BLACK);
+			} else if(commandBuffer[3]=='R') {
+				rgb.setColor(RGBOutput::RED);
+			} else if(commandBuffer[3]=='G') {
+				rgb.setColor(RGBOutput::GREEN);
+			} else if(commandBuffer[3]=='B') {
+				rgb.setColor(RGBOutput::BLUE);
+			} else if(commandBuffer[3]=='P') {
+				rgb.setColor(RGBOutput::PURPLE);
+			} else if(commandBuffer[3]=='Y') {
+				rgb.setColor(RGBOutput::YELLOW);
+			} else if(commandBuffer[3]=='W') {
+				rgb.setColor(RGBOutput::WHITE);
+			}
+		}
+	}
+
+	// Clear the buffer after command is processed
+	// Initialize command buffer
+	for(int x=0; commandBuffer[x]!=0; x++) {
+		commandBuffer[x]=0;
+	}
 }
 
 void clearMomentaryKey(int x) {
@@ -213,13 +244,17 @@ void loop() {
 			clearMomentaryKey(x);
 		}
 	}
+#endif
+
 	key = bluetoothHandler.checkBluetooth();
 	if(key != 0) {
 		handleKey(key);
 		bluetoothHandler.sendMessage("Got key from BT");
 	}
-	serialHandler.handleSerial();
-#endif
+
+	rgb.update();
+
+	serialHandler.checkSerial();
 
 }
 
