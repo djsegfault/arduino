@@ -30,6 +30,16 @@ void Sequencer::on() {
 
 void Sequencer::off() {
 	_enabled = 0;
+	for (int step = 0; step < SEQ_STEPS; step++) {
+		_stepChannels[step].off();
+	}
+
+	if(_rgb != NULL) {
+		if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB || _rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
+			_rgb->setLevels(random(PIN_MIN_VALUE), random(PIN_MIN_VALUE), random(PIN_MIN_VALUE));
+		}
+	}
+
 	Log.Info("[Seq] off"CR);
 }
 
