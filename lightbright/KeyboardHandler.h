@@ -24,7 +24,7 @@ class KeyboardHandler
 	public:
 		void begin(LightBoard *lightBoard);
 		char checkKeyboard();
-		bool handleKey(char key);
+		//bool handleKey(char key);
 	protected:
 		void clearMomentary(int x);
 		LightBoard *_lightBoard;

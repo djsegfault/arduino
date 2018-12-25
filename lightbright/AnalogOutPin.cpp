@@ -8,6 +8,7 @@
 */
  
 #include "AnalogOutPin.h"
+#include <Logging.h>
 
 // For analog, we can send 0-255
 void AnalogOutPin::setPinValue(int value) {

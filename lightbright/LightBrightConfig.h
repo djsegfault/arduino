@@ -12,9 +12,6 @@
 #ifndef LightBrightConfig_h
 #define LightBrightConfig_h
 
-////// Current debugging level
-#define LOGLEVEL LOG_LEVEL_DEBUG
-
 ////// Feature switches.  Uncomment to enable the feature.
 #define LBC_KEYBOARD YES
 
@@ -51,6 +48,15 @@
 #define LBPIN_BTH_KEY 32
 #define LBPIN_BTH_STATE 33
 
+// Sequencer
+// How many steps in each sequence?
+#define SEQ_STEPS 3
+// How many different channel banks can you switch the sequencer between?
+#define SEQ_BANKS 2
+// RGB gets handled separately so if the bank is this then use that handling (may be larger than SEQ_BANKS)
+#define SEQ_BANK_RGB 10
+// the channel numbers for each step in each bank (should be  SEQ_BANKS*SEQ_STEPS values)
+#define SEQ_CHANNEL_NUMBERS { {0,1,2}, {3,4,5} }
 
 // Other configuration settings
 
@@ -60,6 +66,10 @@
 #define LBKEY_TOGGLE {'a','s','d','f','g','h','j','k','1','2','3','4'}
 #define LBKEY_MASTER_MOMENTARY '/'
 #define LBKEY_MASTER_TOGGLE ';'
+
+#define LBKEY_SEQ_MARK 'o'
+#define LBKEY_SEQ_TOGGLE 'p'
+
 #define LBKEY_COMMAND_START '#'
 #define LBKEY_COMMAND_END '~'
 
@@ -69,7 +79,6 @@
 #define LBRGB_GREEN 1
 #define LBRGB_BLUE 2
 #define FADESPEED 5
-
 
 // Sound
 #define LBPIN_SOUND_RESET 30

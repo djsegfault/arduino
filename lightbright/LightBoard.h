@@ -17,19 +17,23 @@
 
 #include "Arduino.h"
 #include <Logging.h>
+#include "Sequencer.h"
+#include "RGBOutput.h"
 #include "Channel.h"
 
 class LightBoard
 {
 public:
-	void begin(Channel *channels, Channel *masterChannel);
+	void begin(Channel *channels, Channel *masterChannel, RGBOutput *rgb);
 	void on();
 	void off();
 	Channel *getMasterChannel();
 	Channel *getChannel(int channelNumber);
+	RGBOutput *getRGB();
 protected:
 	Channel *_channels;
 	Channel *_masterChannel;
+	RGBOutput *_rgb;
 };
 
 #endif

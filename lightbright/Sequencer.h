@@ -22,6 +22,7 @@ public:
 	void begin(Channel *stepChannels);
 	void on();
 	void off();
+	void toggle();
 	void reset();
 	void markTime();
 	void update();

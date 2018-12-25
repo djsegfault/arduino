@@ -1,5 +1,5 @@
 /*
-  MIT License   Copyright (c) 2016 David Kramer
+  MIT License   Copyright (c) 2019 David Kramer
   LightBrightLib - Library for controlling lights.
   https://github.com/djsegfault/arduino/wiki/Project-LightBright
 
@@ -14,10 +14,11 @@
 
 #include "LightBoard.h"
 
-void LightBoard::begin(Channel *channels, Channel *masterChannel)
+void LightBoard::begin(Channel *channels, Channel *masterChannel, RGBOutput *rgb)
 {
 	_channels = channels;
 	_masterChannel = masterChannel;
+	_rgb = rgb;
 }
 
 void LightBoard::on() 
@@ -39,6 +40,13 @@ Channel * LightBoard::getChannel(int channelNumber)
 {
 	return &_channels[channelNumber];
 }
+
+RGBOutput * LightBoard::getRGB()
+{
+	return _rgb;
+}
+
+
 
 
 	

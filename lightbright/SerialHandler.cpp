@@ -12,18 +12,13 @@
 #include "SerialHandler.h"
 
 
-void SerialHandler::begin(LightBoard *lightBoard) {
-	_lightBoard = lightBoard;
+void SerialHandler::begin() {
 }
 
-bool SerialHandler::checkSerial() {
+char SerialHandler::checkSerial() {
 
 	if (Serial.available() > 0) {
-		// read the incoming byte:
-		Serial.read();
-
-		// say what you got:
-		Serial.print("I received Serial input ");
-		_lightBoard->getChannel(0)->toggle();
+		return Serial.read();
 	}
+	return 0;
 }

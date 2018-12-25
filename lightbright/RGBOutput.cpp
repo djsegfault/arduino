@@ -12,8 +12,8 @@
  *      Author: David Kramer
  */
 
-#include "Arduino.h"
-#include "Logging.h"
+#include <Arduino.h>
+#include <Logging.h>
 #include "Pin.h"
 #include "RGBOutput.h"
 
@@ -59,6 +59,7 @@ void RGBOutput::RGBCurrentState(char* loopName) {
 	/** TODO
 	 * Switch this to use logging library
 	 */
+	/*
 	Serial.print("RGB: ");
 	Serial.print(loopName);
 	Serial.print("\t");
@@ -67,6 +68,7 @@ void RGBOutput::RGBCurrentState(char* loopName) {
 	Serial.print(_greenLevel);
 	Serial.print("\t");
 	Serial.println(_blueLevel);
+	*/
 }
 
 void RGBOutput::setLevels(int redLevel, int greenLevel, int blueLevel) {
@@ -132,6 +134,8 @@ void RGBOutput::setMode(Mode mode) {
 void RGBOutput::update() {
 	if (_currentMode == MUSIC) {
 		updateMusic();
+	} else if(_currentMode == SEQUENCE) {
+		// Do nothing, this will be handled externally
 	} else {
 		// Do nothing
 	}
