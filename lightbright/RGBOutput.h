@@ -15,7 +15,7 @@ class RGBOutput {
 public:
 	RGBOutput();
 	enum Mode {
-		NONE, MUSIC, FADE, SEQUENCE
+		NONE, MUSIC, FADE, SEQUENCE_RGB, SEQUENCE_RANDOM
 	};
 	enum Color {
 		BLACK, RED, GREEN, BLUE, PURPLE, YELLOW, WHITE

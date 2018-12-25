@@ -12,13 +12,14 @@ Sequencer::Sequencer() {
 
 }
 
-void Sequencer::begin(Channel *stepChannels) {
+void Sequencer::begin(Channel *stepChannels, RGBOutput* rgb) {
 	_enabled = 0;
 	_markStartTime = 0;
 	_lastChangeTime = micros();
 	_nextChangeTime = _lastChangeTime;
 	_sequenceDelay = 500000L; // .5 seconds
 	_stepChannels = stepChannels;
+	_rgb=rgb;
 }
 
 void Sequencer::on() {
@@ -41,6 +42,7 @@ void Sequencer::toggle() {
 }
 
 void Sequencer::reset() {
+	_markStartTime = 0;
 	_lastChangeTime = micros();
 	_nextChangeTime = _lastChangeTime + _sequenceDelay;
 	_currentStep = 0;
@@ -91,6 +93,16 @@ void Sequencer::updateChannels() {
 	}
 
 	// Is RGBOutput mode SEQUENCE?
+	if(_rgb != NULL) {
+		if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB) {
+			_rgb->setLevels(
+				_currentStep == 0 ? PIN_MAX_VALUE : PIN_MIN_VALUE,
+				_currentStep == 1 ? PIN_MAX_VALUE : PIN_MIN_VALUE,
+				_currentStep == 2 ? PIN_MAX_VALUE : PIN_MIN_VALUE);
+		} else if(_rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
+			_rgb->setLevels(random(PIN_MAX_VALUE), random(PIN_MAX_VALUE), random(PIN_MAX_VALUE));
+		}
+	}
 }
 
 Sequencer::~Sequencer() {

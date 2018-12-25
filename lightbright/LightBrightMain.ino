@@ -114,7 +114,7 @@ void setup() {
 	for(int step=0; step < SEQ_STEPS; step++) {
 		sequenceChannels[step] = channels[ sequenceChannelNumbers[0][step] ];
 	}
-	sequencer.begin(sequenceChannels);
+	sequencer.begin(sequenceChannels, &rgb);
 
 	lightBoard.begin(channels, &masterChannel, &rgb);
 
@@ -225,31 +225,34 @@ void handleCommand() {
 				rgb.setMode(RGBOutput::NONE);
 			} else if (commandBuffer[3] == 'M') {
 				rgb.setMode(RGBOutput::MUSIC);
-			}
-		} else if (commandBuffer[3] == 'S') {
-			rgb.setMode(RGBOutput::SEQUENCE);
-		} else if (commandBuffer[2] == 'C') {
-			//set color
-			if (commandBuffer[3] == 'K') {
-				rgb.setColor(RGBOutput::BLACK);
+			} else if (commandBuffer[3] == 'S') {
+				rgb.setMode(RGBOutput::SEQUENCE_RGB);
 			} else if (commandBuffer[3] == 'R') {
-				rgb.setColor(RGBOutput::RED);
-			} else if (commandBuffer[3] == 'G') {
-				rgb.setColor(RGBOutput::GREEN);
-			} else if (commandBuffer[3] == 'B') {
-				rgb.setColor(RGBOutput::BLUE);
-			} else if (commandBuffer[3] == 'P') {
-				rgb.setColor(RGBOutput::PURPLE);
-			} else if (commandBuffer[3] == 'Y') {
-				rgb.setColor(RGBOutput::YELLOW);
-			} else if (commandBuffer[3] == 'W') {
-				rgb.setColor(RGBOutput::WHITE);
+				rgb.setMode(RGBOutput::SEQUENCE_RANDOM);
+			} else if (commandBuffer[2] == 'C') {
+				//Color mode: set color
+				if (commandBuffer[3] == 'K') {
+					rgb.setColor(RGBOutput::BLACK);
+				} else if (commandBuffer[3] == 'R') {
+					rgb.setColor(RGBOutput::RED);
+				} else if (commandBuffer[3] == 'G') {
+					rgb.setColor(RGBOutput::GREEN);
+				} else if (commandBuffer[3] == 'B') {
+					rgb.setColor(RGBOutput::BLUE);
+				} else if (commandBuffer[3] == 'P') {
+					rgb.setColor(RGBOutput::PURPLE);
+				} else if (commandBuffer[3] == 'Y') {
+					rgb.setColor(RGBOutput::YELLOW);
+				} else if (commandBuffer[3] == 'W') {
+					rgb.setColor(RGBOutput::WHITE);
+				}
 			}
 		}
 	} else if (commandBuffer[1] == 'S') {
 		// Sequence command
 		if (commandBuffer[2] == 'B') {
 			// Change banks
+			// TO DO
 		} else if (commandBuffer[2] == '0') {
 			sequencer.off();
 		} else if (commandBuffer[2] == '1') {

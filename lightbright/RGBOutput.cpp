@@ -134,7 +134,9 @@ void RGBOutput::setMode(Mode mode) {
 void RGBOutput::update() {
 	if (_currentMode == MUSIC) {
 		updateMusic();
-	} else if(_currentMode == SEQUENCE) {
+	} else if(_currentMode == SEQUENCE_RGB) {
+		// Do nothing, this will be handled externally
+	} else if(_currentMode == SEQUENCE_RANDOM) {
 		// Do nothing, this will be handled externally
 	} else {
 		// Do nothing

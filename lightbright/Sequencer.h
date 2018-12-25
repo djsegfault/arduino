@@ -19,7 +19,7 @@
 class Sequencer {
 public:
 	Sequencer();
-	void begin(Channel *stepChannels);
+	void begin(Channel *stepChannels, RGBOutput* rgb);
 	void on();
 	void off();
 	void toggle();
@@ -37,6 +37,7 @@ protected:
 	unsigned long _lastChangeTime;
 	unsigned long _nextChangeTime;
 	unsigned long _sequenceDelay;
+	RGBOutput* _rgb;
 	void updateChannels();
 };
 
