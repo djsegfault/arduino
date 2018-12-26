@@ -57,7 +57,7 @@
 #define SEQ_BANK_RGB 10
 // the channel numbers for each step in each bank (should be  SEQ_BANKS*SEQ_STEPS values)
 // Setting to negative number skips that step
-#define SEQ_CHANNEL_NUMBERS { {0,1,2}, {3,5,4}, {7, 8, 9}, {0, -1, 0} }
+#define SEQ_CHANNEL_NUMBERS { {0,1,2}, {3, 4, 5}, {3,5,4}, {0, -1, 0} }
 
 // Other configuration settings
 
