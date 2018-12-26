@@ -34,7 +34,7 @@ void Sequencer::setChannel(int bank, int step, Channel * channel) {
 void Sequencer::setBank(int bank) {
 	// Reset before changing banks to turn off any channels currently on
 	_currentBank = bank;
-	Log.Info("[Seq] Bank %s selected"CR, bank);
+	Log.Info("[Seq] Bank %d selected"CR, bank);
 	reset();
 }
 
