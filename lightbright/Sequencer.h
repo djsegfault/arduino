@@ -19,7 +19,9 @@
 class Sequencer {
 public:
 	Sequencer();
-	void begin(Channel *stepChannels, RGBOutput* rgb);
+	void begin(RGBOutput* rgb);
+	void setChannel(int bank, int step, Channel * channel);
+	void setBank(int bank);
 	void on();
 	void off();
 	void toggle();
@@ -30,15 +32,16 @@ public:
 protected:
 	int _enabled;
 	// zero-based
+	int _currentBank;
 	int _currentStep;
-	Channel *_stepChannels;
+	Channel *_stepChannels[SEQ_BANKS][SEQ_STEPS];
 	// Times are in microseconds
 	unsigned long _markStartTime;
 	unsigned long _lastChangeTime;
 	unsigned long _nextChangeTime;
 	unsigned long _sequenceDelay;
 	RGBOutput* _rgb;
-	void updateChannels();
+	void updateChannel(int step, bool state);
 };
 
 #endif /* LIGHTBRIGHT_SEQUENCER_H_ */

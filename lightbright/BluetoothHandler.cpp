@@ -20,10 +20,10 @@ BluetoothHandler::~BluetoothHandler() {
 void BluetoothHandler::begin() {
 	LBBTH_SERIAL_PORT.begin(9600);
 	while (! LBBTH_SERIAL_PORT ) {
-		Log.Info("Bluetooth Waiting for connect");
+		Log.Info("Bluetooth Waiting for connection to module"CR);
 		delay(1000);
 	}
-	Log.Info("Bluetooth connected");
+	Log.Info("Bluetooth module connected"CR);
 }
 
 char BluetoothHandler::checkBluetooth() {

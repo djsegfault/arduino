@@ -37,7 +37,7 @@ RGBOutput rgb;
 
 Sequencer sequencer;
 int sequenceChannelNumbers[SEQ_BANKS][SEQ_STEPS] = SEQ_CHANNEL_NUMBERS;
-Channel sequenceChannels[SEQ_STEPS];
+Channel *sequenceChannels[SEQ_BANKS][SEQ_STEPS];
 
 
 // Key to channel mappings
@@ -63,7 +63,7 @@ BluetoothHandler bluetoothHandler;
 char commandBuffer[LB_COMMAND_MAX_LENGTH];
 
 void setup() {
-	Log.Init(LOG_LEVEL_INFOS, 115200L);
+	Log.Init(LOG_LEVEL_DEBUG, 115200L);
 	delay(1000);
 	Log.Info(CR"LightBrightMain starting"CR);
 	int nextChannel = 0;
@@ -78,11 +78,13 @@ void setup() {
 	// Initialize digital outputs
 	for (int x = 0; x < LBPIN_DOUT_COUNT; x++) {
 		digitalPins[x].begin(LBPIN_DOUT_START + (x * LBPIN_DOUT_INTERVAL));
+		// Channel number is 1-based not 0-based
 		channels[nextChannel].begin(&digitalPins[x], nextChannel + 1,
 				&masterChannel);
 		channels[nextChannel].off();
-		Log.Info("Initialized digital channel %d to pin %d"CR,
+		Log.Info("Initialized digital channel %d (element %d) to pin %d"CR,
 				channels[nextChannel].getNumber(),
+				nextChannel,
 				channels[nextChannel].getPin()->getPinNumber());
 		nextChannel++;
 	}
@@ -111,10 +113,17 @@ void setup() {
 
 	// Initialize Sequencer
 	// Always load bank 0 by default
-	for(int step=0; step < SEQ_STEPS; step++) {
-		sequenceChannels[step] = channels[ sequenceChannelNumbers[0][step] ];
+	for(int bank=0; bank < SEQ_BANKS; bank++) {
+		for(int step=0; step < SEQ_STEPS; step++) {
+			if(sequenceChannelNumbers[bank][step] >= 0 && sequenceChannelNumbers[bank][step] < LBCHANNEL_COUNT) {
+				sequencer.setChannel(bank, step, &channels[ sequenceChannelNumbers[bank][step] ]);
+			} else {
+				sequencer.setChannel(bank, step, NULL);
+			}
+		}
 	}
-	sequencer.begin(sequenceChannels, &rgb);
+	sequencer.setBank(0);
+	sequencer.begin(&rgb);
 
 	lightBoard.begin(channels, &masterChannel, &rgb);
 
@@ -125,10 +134,13 @@ void setup() {
 	bluetoothHandler.begin();
 
 	commandBuffer[0] = 0;
+	Log.Info("Setup done"CR);
+	Log.Info(CR);
+	Log.Info(CR);
 }
 
 int handleKey(char key) {
-	Log.Info("[Key] Got '%c' "CR, key);
+	Log.Debug("[Key] Got '%c' "CR, key);
 	bool keyFound = false;
 
 	// Are we building a command? Or is the the command start key?
@@ -173,7 +185,7 @@ int handleKey(char key) {
 			} else {
 				// If this channel's keys are not being pressed, turn it off if it's on.
 				Log.Verbose(
-						"[Key] Momemtary not being pressed, so clearing '%d'"CR,
+						"[Key] Momentary not being pressed, so clearing '%d'"CR,
 						lightBoard.getChannel(x)->getNumber());
 				clearMomentaryKey(x);
 			}
@@ -251,8 +263,12 @@ void handleCommand() {
 	} else if (commandBuffer[1] == 'S') {
 		// Sequence command
 		if (commandBuffer[2] == 'B') {
-			// Change banks
-			// TO DO
+			int newBank = commandBuffer[3] - '0';
+			if(newBank >=0 && newBank < SEQ_BANKS) {
+				sequencer.setBank(newBank);
+			} else {
+				Log.Error("Invalid bank '%c'"CR, commandBuffer[3]);
+			}
 		} else if (commandBuffer[2] == '0') {
 			sequencer.off();
 		} else if (commandBuffer[2] == '1') {

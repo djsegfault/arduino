@@ -87,7 +87,7 @@ void RGBOutput::setLevels(int redLevel, int greenLevel, int blueLevel) {
 		analogWrite(_bluePin, blueLevel);
 	}
 
-	Log.Debug("RGB: R %d\tG %d\tB %d"CR, _redLevel, _greenLevel, _blueLevel);
+	//Log.Debug("RGB: R %d\tG %d\tB %d"CR, _redLevel, _greenLevel, _blueLevel);
 }
 
 void RGBOutput::setColor(Color color) {
@@ -168,6 +168,7 @@ void RGBOutput::updateMusic() {
 		digitalWrite(LBPIN_SOUND_STROBE, HIGH);
 	}
 
+	/*
 	Log.Debug("RGBMusic: 0%d\t1 %d\t2 %d\t3 %d\t4 %d\t5 %d\t6 %d"CR,
 			spectrumValueLeft[0],
 			spectrumValueLeft[1],
@@ -176,6 +177,7 @@ void RGBOutput::updateMusic() {
 			spectrumValueLeft[4],
 			spectrumValueLeft[5],
 			spectrumValueLeft[6]);
+	*/
 
 	setLevels(max(spectrumValueLeft[0], spectrumValueRight[0]),
 				max(spectrumValueLeft[3], spectrumValueRight[3]),
