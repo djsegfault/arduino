@@ -18,7 +18,7 @@
 #include <Logging.h>
 
 void setup() ;
-int handleKey(char key) ;
+void handleKey(char key) ;
 void handleCommand() ;
 void clearMomentaryKey(int x) ;
 void loop() ;

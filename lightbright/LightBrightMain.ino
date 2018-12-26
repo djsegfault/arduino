@@ -139,7 +139,12 @@ void setup() {
 	Log.Info(CR);
 }
 
-int handleKey(char key) {
+void handleKey(char key) {
+	// Ignore certain keys like CR/LF
+	if(key == 13 || key == 10) {
+		return;
+	}
+
 	Log.Debug("[Key] Got '%c' "CR, key);
 	bool keyFound = false;
 
@@ -223,12 +228,10 @@ int handleKey(char key) {
 	if (!keyFound) {
 		Log.Error("[Key] Unidentified key '%c' (%d)"CR, key, key);
 	}
-
-	return keyFound;
 }
 
 void handleCommand() {
-	Log.Info("Processing command '%s'"CR, commandBuffer);
+	Log.Debug("Processing command '%s'"CR, commandBuffer);
 	if (commandBuffer[1] == 'R') {
 		// RGB command
 		if (commandBuffer[2] == 'M') {
@@ -278,6 +281,11 @@ void handleCommand() {
 		} else if (commandBuffer[2] == 'M') {
 			sequencer.markTime();
 		}
+
+	} else if (commandBuffer[1] == 'T') {
+		// Message to display in log
+		Log.Debug("We have a text message"CR);
+		Log.Error("Message: %s"CR, (commandBuffer + 2) );
 	}
 
 	// Clear the buffer after command is processed
@@ -285,6 +293,7 @@ void handleCommand() {
 	for (int x = 0; commandBuffer[x] != 0; x++) {
 		commandBuffer[x] = 0;
 	}
+
 }
 
 void clearMomentaryKey(int x) {
