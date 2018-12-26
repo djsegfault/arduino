@@ -20,10 +20,10 @@ BluetoothHandler::~BluetoothHandler() {
 void BluetoothHandler::begin() {
 	LBBTH_SERIAL_PORT.begin(9600);
 	while (! LBBTH_SERIAL_PORT ) {
-		Log.Info("Bluetooth Waiting for connection to module"CR);
+		Log.Info("[BT]Connecting to HC-05"CR);
 		delay(1000);
 	}
-	Log.Info("Bluetooth module connected"CR);
+	Log.Info("[BT]HC-05 connected"CR);
 }
 
 char BluetoothHandler::checkBluetooth() {
@@ -31,7 +31,7 @@ char BluetoothHandler::checkBluetooth() {
 
 	if(LBBTH_SERIAL_PORT.available() != 0) {
 		key = LBBTH_SERIAL_PORT.read();
-		Log.Debug("Bluetooth: got key '%c'"CR , key);
+		Log.Debug("[BT] Got key '%c'"CR , key);
 	}
 
 	return key;
