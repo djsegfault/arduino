@@ -18,10 +18,17 @@
 #include <Logging.h>
 
 void setup() ;
+void loop() ;
+
 void handleKey(char key) ;
 void handleCommand() ;
+void handleBluetoothCommand();
+void handleMasterCommand();
+void handleRGBCommand();
+void handleSequenceCommand();
+void handleTextCommand();
+
 void clearMomentaryKey(int x) ;
-void loop() ;
 
 
 #include "LightBrightMain.ino"

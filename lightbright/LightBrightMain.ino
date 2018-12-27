@@ -166,7 +166,6 @@ void handleKey(char key) {
 		}
 		keyFound = true;
 	} else {
-
 		// Is it a channel key?
 		for (int x = 0; x < LBCHANNEL_COUNT; x++) {
 			if (key == momentaryKeys[x]) {
@@ -232,66 +231,25 @@ void handleKey(char key) {
 
 void handleCommand() {
 	Log.Info("Processing command '%s'"CR, commandBuffer);
-	if (commandBuffer[1] == 'R') {
-		// RGB command
-		if (commandBuffer[2] == 'M') {
-			// Set mode
-			if (commandBuffer[3] == 'N') {
-				rgb.setMode(RGBOutput::NONE);
-			} else if (commandBuffer[3] == 'M') {
-				rgb.setMode(RGBOutput::MUSIC);
-			} else if (commandBuffer[3] == 'S') {
-				rgb.setMode(RGBOutput::SEQUENCE_RGB);
-			} else if (commandBuffer[3] == 'R') {
-				rgb.setMode(RGBOutput::SEQUENCE_RANDOM);
-			}
-		} else if (commandBuffer[2] == 'C') {
-			// Set to a solid color (will get overwritten if mode is not NONE)
-			if (commandBuffer[3] == 'K') {
-				rgb.setColor(RGBOutput::BLACK);
-			} else if (commandBuffer[3] == 'R') {
-				rgb.setColor(RGBOutput::RED);
-			} else if (commandBuffer[3] == 'G') {
-				rgb.setColor(RGBOutput::GREEN);
-			} else if (commandBuffer[3] == 'B') {
-				rgb.setColor(RGBOutput::BLUE);
-			} else if (commandBuffer[3] == 'P') {
-				rgb.setColor(RGBOutput::PURPLE);
-			} else if (commandBuffer[3] == 'Y') {
-				rgb.setColor(RGBOutput::YELLOW);
-			} else if (commandBuffer[3] == 'W') {
-				rgb.setColor(RGBOutput::WHITE);
-			}
-		}
-	} else if (commandBuffer[1] =='M') {
-		// master channel
-	} else if (commandBuffer[1] == 'S') {
-		// Sequence command
-		if (commandBuffer[2] == 'B') {
-			int newBank = commandBuffer[3] - '0';
-			if(newBank >=0 && newBank < SEQ_BANKS) {
-				sequencer.setBank(newBank);
-			} else {
-				Log.Error("Invalid bank '%c'"CR, commandBuffer[3]);
-			}
-		} else if (commandBuffer[2] == '0') {
-			sequencer.off();
-		} else if (commandBuffer[2] == '1') {
-			sequencer.on();
-		} else if (commandBuffer[2] == 'T') {
-			sequencer.toggle();
-		} else if (commandBuffer[2] == 'M') {
-			sequencer.markTime();
-		}
-	} else if (commandBuffer[1] == 'T') {
-		// Message to display in log
-		Log.Info("Message: %s"CR, (commandBuffer + 2) );
-	} else if (commandBuffer[1] == 'B') {
-		// Bluetooth command
-		if (commandBuffer[2] == 'R') {
-			// Reconnect
-			bluetoothHandler.begin();
-		}
+	switch(commandBuffer[1]) {
+	case 'B':
+		handleBluetoothCommand();
+		break;
+	case 'M':
+		handleMasterCommand();
+		break;
+	case 'R': // RGBOutout
+		handleRGBCommand();
+		break;
+	case 'S':
+		handleSequenceCommand();
+		break;
+	case 'T':
+		handleTextCommand();
+		break;
+	default:
+		Log.Error("Invalid command '%s'"CR, commandBuffer);
+		break;
 	}
 
 	// Clear the buffer after command is processed
@@ -300,6 +258,127 @@ void handleCommand() {
 		commandBuffer[x] = 0;
 	}
 
+}
+
+
+void handleBluetoothCommand() {
+	switch (commandBuffer[2]) {
+	case 'R':  // Reconnect
+		bluetoothHandler.begin();
+		break;
+	default:
+		Log.Error("Invalid Bluetooth command"CR);
+		break;
+	}
+}
+
+void handleMasterCommand() {
+	switch (commandBuffer[2]) {
+	case '0':  // Off
+		masterChannel.setLevel(PIN_MIN_VALUE);
+		break;
+	case '1':  // Set level
+		masterChannel.setLevel(PIN_MAX_VALUE);
+		break;
+	case 'T':  // Set level
+		masterChannel.toggle();
+		break;
+	case 'L':  // Set level
+		// TODO really parse level
+		masterChannel.setLevel(50);
+		break;
+	default:
+		Log.Error("Invalid master level command "CR);
+		break;
+	}
+}
+
+void handleRGBCommand() {
+	switch(commandBuffer[2]) {
+		case 'M':
+			switch(commandBuffer[3]) {
+			case 'N':
+				rgb.setMode(RGBOutput::NONE);
+				break;
+			case 'M':
+				rgb.setMode(RGBOutput::MUSIC);
+				break;
+			case 'S':
+				rgb.setMode(RGBOutput::SEQUENCE_RGB);
+				break;
+			case 'R':
+				rgb.setMode(RGBOutput::SEQUENCE_RANDOM);
+				break;
+			default:
+				Log.Error("Invalid RGB mode command"CR);
+				break;
+			}
+			break;
+		case 'C':
+			switch(commandBuffer[3]) {
+			case 'K':
+				rgb.setColor(RGBOutput::BLACK);
+				break;
+			case 'R':
+				rgb.setColor(RGBOutput::RED);
+				break;
+			case 'G':
+				rgb.setColor(RGBOutput::GREEN);
+				break;
+			case 'B':
+				rgb.setColor(RGBOutput::BLUE);
+				break;
+			case 'P':
+				rgb.setColor(RGBOutput::PURPLE);
+				break;
+			case 'Y':
+				rgb.setColor(RGBOutput::YELLOW);
+				break;
+			case 'W':
+				rgb.setColor(RGBOutput::WHITE);
+				break;
+			default:
+				Log.Error("Invalid RGB color command"CR);
+				break;
+			}
+			break;
+		default:
+			Log.Error("Invalid RGB command"CR);
+			break;
+	}
+}
+
+void handleSequenceCommand() {
+	int newBank;
+	switch(commandBuffer[2]) {
+	case 'B':
+		newBank = commandBuffer[3] - '0';
+		if(newBank >=0 && newBank < SEQ_BANKS) {
+			sequencer.setBank(newBank);
+		} else {
+			Log.Error("Invalid bank '%c'"CR, newBank);
+		}
+		break;
+	case '0':
+		sequencer.off();
+		break;
+	case '1':
+		sequencer.on();
+		break;
+	case 'T':
+		sequencer.toggle();
+		break;
+	case 'M':
+		sequencer.markTime();
+		break;
+	default:
+		Log.Error("Invalid sequence command");
+		break;
+	}
+}
+
+void handleTextCommand() {
+	Log.Info("Message: %s"CR, (commandBuffer + 2) );
 }
 
 void clearMomentaryKey(int x) {
