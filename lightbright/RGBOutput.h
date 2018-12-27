@@ -10,6 +10,7 @@
 
 #include "Arduino.h"
 #include "LightBrightConfig.h"
+#include "Channel.h"
 
 class RGBOutput {
 public:
@@ -20,8 +21,7 @@ public:
 	enum Color {
 		BLACK, RED, GREEN, BLUE, PURPLE, YELLOW, WHITE
 	};
-	void begin(unsigned char redPin, unsigned char greenPin,
-			unsigned char bluePin);
+	void begin(unsigned char redPin, unsigned char greenPin, unsigned char bluePin, Channel *masterChannel);
 	void setLevels(int redLevel, int greenLevel, int blueLevel);
 	void setColor(Color color);
 	void RGBCurrentState(char* loopName);
@@ -33,6 +33,7 @@ protected:
 	unsigned char _redPin;
 	unsigned char _greenPin;
 	unsigned char _bluePin;
+	Channel *_masterChannel;
 	int _redLevel;
 	int _greenLevel;
 	int _blueLevel;

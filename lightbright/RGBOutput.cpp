@@ -31,11 +31,12 @@ RGBOutput::~RGBOutput() {
 	// TODO Auto-generated destructor stub
 }
 
-void RGBOutput::begin(unsigned char redPin, unsigned char greenPin,
-		unsigned char bluePin) {
+void RGBOutput::begin(unsigned char redPin, unsigned char greenPin, unsigned char bluePin, Channel *masterChannel) {
 	_redPin = redPin;
 	_greenPin = greenPin;
 	_bluePin = bluePin;
+	_currentMode = NONE;
+	_masterChannel = masterChannel;
 
 	pinMode(_redPin, OUTPUT);
 	pinMode(_greenPin, OUTPUT);
@@ -72,25 +73,28 @@ void RGBOutput::RGBCurrentState(char* loopName) {
 }
 
 void RGBOutput::setLevels(int redLevel, int greenLevel, int blueLevel) {
+	float masterLevelMultiplier = (float) _masterChannel->getLevel() / PIN_VALUE_STEPS;
 	if (_redLevel != redLevel) {
-		_redLevel = constrain(redLevel, PIN_MIN_VALUE, PIN_MAX_VALUE);
+		_redLevel = constrain(redLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
 		analogWrite(_redPin, redLevel);
 	}
 
 	if (_greenLevel != greenLevel) {
-		_greenLevel = constrain(greenLevel, PIN_MIN_VALUE, PIN_MAX_VALUE);
+		_greenLevel = constrain(greenLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
 		analogWrite(_greenPin, greenLevel);
 	}
 
 	if (_blueLevel != blueLevel) {
-		_blueLevel = constrain(blueLevel, PIN_MIN_VALUE, PIN_MAX_VALUE);
+		_blueLevel = constrain(blueLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
 		analogWrite(_bluePin, blueLevel);
 	}
 
-	//Log.Debug("RGB: R %d\tG %d\tB %d"CR, _redLevel, _greenLevel, _blueLevel);
+	Log.Verbose("RGB: Set to [%d][%d][%d] mode %d"CR, _redLevel, _greenLevel, _blueLevel, _currentMode);
 }
 
 void RGBOutput::setColor(Color color) {
+	Log.Info("[RGB] mode %d setColor %d"CR, _currentMode, color);
+
 	switch(color) {
 	case BLACK:
 		setLevels(PIN_MIN_VALUE,PIN_MIN_VALUE,PIN_MIN_VALUE);
@@ -125,7 +129,7 @@ void RGBOutput::setMode(Mode mode) {
 	_currentMode = mode;
 
 	if (_currentMode == NONE) {
-		setLevels(0, 0, 0);
+		setLevels(PIN_MIN_VALUE, PIN_MIN_VALUE, PIN_MIN_VALUE);
 	}
 
 	Log.Info("RGB mode is now %d"CR, _currentMode);
@@ -134,10 +138,6 @@ void RGBOutput::setMode(Mode mode) {
 void RGBOutput::update() {
 	if (_currentMode == MUSIC) {
 		updateMusic();
-	} else if(_currentMode == SEQUENCE_RGB) {
-		// Do nothing, this will be handled externally
-	} else if(_currentMode == SEQUENCE_RANDOM) {
-		// Do nothing, this will be handled externally
 	} else {
 		// Do nothing
 	}
@@ -159,17 +159,16 @@ void RGBOutput::updateMusic() {
 
 		spectrumValueLeft[i] = map(spectrumValueLeft[i], 0, 1023, 0, 255);
 		if (spectrumValueLeft[i] < LBSOUND_MINVALUE) {
-			spectrumValueLeft[i] = 0;
+			spectrumValueLeft[i] = PIN_MIN_VALUE;
 		}
 		spectrumValueRight[i] = map(spectrumValueRight[i], 0, 1023, 0, 255);
 		if (spectrumValueRight[i] < LBSOUND_MINVALUE) {
-			spectrumValueRight[i] = 0;
+			spectrumValueRight[i] = PIN_MIN_VALUE;
 		}
 		digitalWrite(LBPIN_SOUND_STROBE, HIGH);
 	}
 
-	/*
-	Log.Debug("RGBMusic: 0%d\t1 %d\t2 %d\t3 %d\t4 %d\t5 %d\t6 %d"CR,
+	Log.Verbose("RGBMusic: 0%d\t1 %d\t2 %d\t3 %d\t4 %d\t5 %d\t6 %d"CR,
 			spectrumValueLeft[0],
 			spectrumValueLeft[1],
 			spectrumValueLeft[2],
@@ -177,7 +176,6 @@ void RGBOutput::updateMusic() {
 			spectrumValueLeft[4],
 			spectrumValueLeft[5],
 			spectrumValueLeft[6]);
-	*/
 
 	setLevels(max(spectrumValueLeft[0], spectrumValueRight[0]),
 				max(spectrumValueLeft[3], spectrumValueRight[3]),

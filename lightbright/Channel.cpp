@@ -82,8 +82,8 @@ void Channel::toggle() {
 }
 
 void Channel::_updateEffectiveLevel() {	
-	float divisor = (float) (PIN_MAX_VALUE - PIN_MIN_VALUE);
-	_effectiveLevel = (int) (_level * ( (float) _masterChannel->getLevel() / divisor ) );
+	//float divisor = (float) (PIN_MAX_VALUE - PIN_MIN_VALUE);
+	_effectiveLevel = (int) (_level * ( (float) _masterChannel->getLevel() / PIN_VALUE_STEPS ) );
 	
 	Log.Debug("Channel %d pin %d level=%d master=%d effective=%d"CR, 
 			_channelNumber, 

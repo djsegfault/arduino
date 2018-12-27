@@ -109,7 +109,7 @@ void setup() {
 	momentaryMasterStatus = false;
 	toggleMasterStatus = false;
 
-	rgb.begin(LBPIN_RGB_RED, LBPIN_RGB_GREEN, LBPIN_RGB_BLUE);
+	rgb.begin(LBPIN_RGB_RED, LBPIN_RGB_GREEN, LBPIN_RGB_BLUE, &masterChannel);
 
 	// Initialize Sequencer
 	// Always load bank 0 by default
@@ -145,23 +145,23 @@ void handleKey(char key) {
 		return;
 	}
 
-	Log.Debug("[Key] Got '%c' "CR, key);
+	Log.Verbose("[Key] Got '%c' "CR, key);
 	bool keyFound = false;
 
 	// Are we building a command? Or is the the command start key?
 	if (commandBuffer[0] != 0 || key == LBKEY_COMMAND_START) {
-		Log.Debug("Adding to command, first char is %d length=%d Command before is '%s'"CR,
+		Log.Verbose("Adding to command, first char is %d length=%d Command before is '%s'"CR,
 				commandBuffer[0], strlen(commandBuffer), commandBuffer);
 		if (strlen(commandBuffer) < LB_COMMAND_MAX_LENGTH) {
 			commandBuffer[strlen(commandBuffer)] = key;
 			commandBuffer[strlen(commandBuffer) + 1] = NULL;
-			Log.Debug("Command is now '%s'"CR, commandBuffer);
+			Log.Verbose("Command is now '%s'"CR, commandBuffer);
 
 			if (key == LBKEY_COMMAND_END) {
 				handleCommand();
 			}
 		} else {
-			Log.Error("Command '%s' to long, abandoning"CR, commandBuffer);
+			Log.Error("Command '%s' too long, abandoning"CR, commandBuffer);
 			commandBuffer[0] = NULL;
 		}
 		keyFound = true;
@@ -231,7 +231,7 @@ void handleKey(char key) {
 }
 
 void handleCommand() {
-	Log.Debug("Processing command '%s'"CR, commandBuffer);
+	Log.Info("Processing command '%s'"CR, commandBuffer);
 	if (commandBuffer[1] == 'R') {
 		// RGB command
 		if (commandBuffer[2] == 'M') {
@@ -244,25 +244,27 @@ void handleCommand() {
 				rgb.setMode(RGBOutput::SEQUENCE_RGB);
 			} else if (commandBuffer[3] == 'R') {
 				rgb.setMode(RGBOutput::SEQUENCE_RANDOM);
-			} else if (commandBuffer[2] == 'C') {
-				//Color mode: set color
-				if (commandBuffer[3] == 'K') {
-					rgb.setColor(RGBOutput::BLACK);
-				} else if (commandBuffer[3] == 'R') {
-					rgb.setColor(RGBOutput::RED);
-				} else if (commandBuffer[3] == 'G') {
-					rgb.setColor(RGBOutput::GREEN);
-				} else if (commandBuffer[3] == 'B') {
-					rgb.setColor(RGBOutput::BLUE);
-				} else if (commandBuffer[3] == 'P') {
-					rgb.setColor(RGBOutput::PURPLE);
-				} else if (commandBuffer[3] == 'Y') {
-					rgb.setColor(RGBOutput::YELLOW);
-				} else if (commandBuffer[3] == 'W') {
-					rgb.setColor(RGBOutput::WHITE);
-				}
+			}
+		} else if (commandBuffer[2] == 'C') {
+			// Set to a solid color (will get overwritten if mode is not NONE)
+			if (commandBuffer[3] == 'K') {
+				rgb.setColor(RGBOutput::BLACK);
+			} else if (commandBuffer[3] == 'R') {
+				rgb.setColor(RGBOutput::RED);
+			} else if (commandBuffer[3] == 'G') {
+				rgb.setColor(RGBOutput::GREEN);
+			} else if (commandBuffer[3] == 'B') {
+				rgb.setColor(RGBOutput::BLUE);
+			} else if (commandBuffer[3] == 'P') {
+				rgb.setColor(RGBOutput::PURPLE);
+			} else if (commandBuffer[3] == 'Y') {
+				rgb.setColor(RGBOutput::YELLOW);
+			} else if (commandBuffer[3] == 'W') {
+				rgb.setColor(RGBOutput::WHITE);
 			}
 		}
+	} else if (commandBuffer[1] =='M') {
+		// master channel
 	} else if (commandBuffer[1] == 'S') {
 		// Sequence command
 		if (commandBuffer[2] == 'B') {
@@ -281,11 +283,15 @@ void handleCommand() {
 		} else if (commandBuffer[2] == 'M') {
 			sequencer.markTime();
 		}
-
 	} else if (commandBuffer[1] == 'T') {
 		// Message to display in log
-		Log.Debug("We have a text message"CR);
-		Log.Error("Message: %s"CR, (commandBuffer + 2) );
+		Log.Info("Message: %s"CR, (commandBuffer + 2) );
+	} else if (commandBuffer[1] == 'B') {
+		// Bluetooth command
+		if (commandBuffer[2] == 'R') {
+			// Reconnect
+			bluetoothHandler.begin();
+		}
 	}
 
 	// Clear the buffer after command is processed
