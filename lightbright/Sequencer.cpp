@@ -93,7 +93,10 @@ void Sequencer::update() {
 				_currentStep++;
 			}
 			updateChannel(_currentStep, true);
-			Log.Info("[Seq][%d][%d] (%d)"CR, _currentBank, _currentStep, _stepChannels[_currentBank][_currentStep]->getNumber());
+			Log.Info("[Seq][%d][%d] (%d)"CR,
+					_currentBank,
+					_currentStep,
+					_stepChannels[_currentBank][_currentStep] == NULL ? -1 : _stepChannels[_currentBank][_currentStep]->getNumber());
 
 			_lastChangeTime = currentTime;
 			_nextChangeTime = currentTime + _sequenceDelay;

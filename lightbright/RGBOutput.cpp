@@ -53,43 +53,22 @@ void RGBOutput::begin(unsigned char redPin, unsigned char greenPin, unsigned cha
 	pinMode(LBPIN_SOUND_RIGHT, INPUT);
 	digitalWrite(LBPIN_SOUND_RESET, LOW);
 	digitalWrite(LBPIN_SOUND_STROBE, HIGH);
-
-}
-
-void RGBOutput::RGBCurrentState(char* loopName) {
-	/** TODO
-	 * Switch this to use logging library
-	 */
-	/*
-	Serial.print("RGB: ");
-	Serial.print(loopName);
-	Serial.print("\t");
-	Serial.print(_redLevel);
-	Serial.print("\t");
-	Serial.print(_greenLevel);
-	Serial.print("\t");
-	Serial.println(_blueLevel);
-	*/
 }
 
 void RGBOutput::setLevels(int redLevel, int greenLevel, int blueLevel) {
 	float masterLevelMultiplier = (float) _masterChannel->getLevel() / PIN_VALUE_STEPS;
-	if (_redLevel != redLevel) {
-		_redLevel = constrain(redLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
-		analogWrite(_redPin, redLevel);
-	}
+	_redLevel   = constrain(redLevel   * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE) ;
+	_greenLevel = constrain(greenLevel * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE);
+	_blueLevel  = constrain(blueLevel  * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE);
 
-	if (_greenLevel != greenLevel) {
-		_greenLevel = constrain(greenLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
-		analogWrite(_greenPin, greenLevel);
-	}
+	analogWrite(_redPin,   _redLevel);
+	analogWrite(_greenPin, _greenLevel);
+	analogWrite(_bluePin,  _blueLevel);
 
-	if (_blueLevel != blueLevel) {
-		_blueLevel = constrain(blueLevel, PIN_MIN_VALUE, PIN_MAX_VALUE) * masterLevelMultiplier;
-		analogWrite(_bluePin, blueLevel);
-	}
-
-	Log.Verbose("RGB: Set to [%d][%d][%d] mode %d"CR, _redLevel, _greenLevel, _blueLevel, _currentMode);
+	Log.Debug("[RGB] [%d->%d][%d->%d][%d->%d]"CR,
+			redLevel, _redLevel,
+			greenLevel, _greenLevel,
+			blueLevel, _blueLevel);
 }
 
 void RGBOutput::setColor(Color color) {

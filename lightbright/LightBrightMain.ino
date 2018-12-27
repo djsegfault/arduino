@@ -111,6 +111,7 @@ void setup() {
 
 	rgb.begin(LBPIN_RGB_RED, LBPIN_RGB_GREEN, LBPIN_RGB_BLUE, &masterChannel);
 
+
 	// Initialize Sequencer
 	// Always load bank 0 by default
 	for(int bank=0; bank < SEQ_BANKS; bank++) {
@@ -277,15 +278,20 @@ void handleMasterCommand() {
 	case '0':  // Off
 		masterChannel.setLevel(PIN_MIN_VALUE);
 		break;
-	case '1':  // Set level
+	case '1':  // On
 		masterChannel.setLevel(PIN_MAX_VALUE);
 		break;
-	case 'T':  // Set level
+	case 'T':  // Toggle
 		masterChannel.toggle();
 		break;
 	case 'L':  // Set level
-		// TODO really parse level
-		masterChannel.setLevel(50);
+		int newLevel = 0;
+		sscanf(commandBuffer,"#ML%d~", &newLevel);
+		if(newLevel >= PIN_MIN_VALUE && newLevel <= PIN_MAX_VALUE) {
+			masterChannel.setLevel(newLevel);
+		} else {
+			Log.Error("Invalid master level value %d"CR, newLevel);
+		}
 		break;
 	default:
 		Log.Error("Invalid master level command "CR);
@@ -349,10 +355,11 @@ void handleRGBCommand() {
 }
 
 void handleSequenceCommand() {
-	int newBank;
+	int newBank = commandBuffer[3] - '0';
+	Log.Debug("hS"CR);
 	switch(commandBuffer[2]) {
 	case 'B':
-		newBank = commandBuffer[3] - '0';
+		Log.Debug("hSB"CR);
 		if(newBank >=0 && newBank < SEQ_BANKS) {
 			sequencer.setBank(newBank);
 		} else {
@@ -372,7 +379,7 @@ void handleSequenceCommand() {
 		sequencer.markTime();
 		break;
 	default:
-		Log.Error("Invalid sequence command");
+		Log.Debug("Invalid sequence command");
 		break;
 	}
 }
