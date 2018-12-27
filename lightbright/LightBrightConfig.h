@@ -50,17 +50,18 @@
 
 // Sequencer
 // How many steps in each sequence?
-#define SEQ_STEPS 3
+#define LBSEQ_STEPS 3
 // How many different channel banks can you switch the sequencer between?
-#define SEQ_BANKS 4
+#define LBSEQ_BANKS 4
 // RGB gets handled separately so if the bank is this then use that handling (may be larger than SEQ_BANKS)
-#define SEQ_BANK_RGB 10
+#define LBSEQ_BANK_RGB 10
 // the channel numbers for each step in each bank (should be SEQ_BANKS*SEQ_STEPS values)
 // Setting to negative number skips that step
 // The last bank is all -1 so you can sequence just RGB
-#define SEQ_CHANNEL_NUMBERS { {0,1,2}, {3, 4, 5}, {3,5,4}, {-1, -1, -1} }
+#define LBSEQ_CHANNEL_NUMBERS { {0,1,2}, {3, 4, 5}, {3,5,4}, {-1, -1, -1} }
 
 // Other configuration settings
+#define LBDEBUG_BAUD 115200L
 
 // Keyboard key assignments
 // Each string represents a series of keys, one per channel, each one should be LBCHANNEL_COUNT long

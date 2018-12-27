@@ -19,8 +19,8 @@ Channel::Channel() {
 	_pin = 0;
 	_channelNumber = 0;
 	_masterChannel = NULL;
-	_level = PIN_MIN_VALUE;
-	_effectiveLevel = PIN_MIN_VALUE;
+	_level = LBPIN_MIN_VALUE;
+	_effectiveLevel = LBPIN_MIN_VALUE;
 }
 
 
@@ -48,17 +48,17 @@ int Channel::getLevel() {
 }
 
 void Channel::on() {
-	_level = PIN_MAX_VALUE;
+	_level = LBPIN_MAX_VALUE;
 	_updateEffectiveLevel();
 }
 
 void Channel::off() {
-	_level = PIN_MIN_VALUE;
+	_level = LBPIN_MIN_VALUE;
 	_updateEffectiveLevel();
 }
 
 int Channel::isOn() {
-	if(_level == PIN_MAX_VALUE)  {
+	if(_level == LBPIN_MAX_VALUE)  {
 		return true;
 	} else {
 		return false;
@@ -66,7 +66,7 @@ int Channel::isOn() {
 }
 
 int Channel::isOff() {
-	if(_level == PIN_MIN_VALUE)  {
+	if(_level == LBPIN_MIN_VALUE)  {
 		return true;
 	} else {
 		return false;
@@ -74,7 +74,7 @@ int Channel::isOff() {
 }
 
 void Channel::toggle() {
-	if(_level != PIN_MAX_VALUE) {
+	if(_level != LBPIN_MAX_VALUE) {
 		on();
 	} else {
 		off();
@@ -82,7 +82,7 @@ void Channel::toggle() {
 }
 
 void Channel::_updateEffectiveLevel() {	
-	_effectiveLevel = (int) (_level * ( (float) _masterChannel->getLevel() / PIN_VALUE_STEPS ) );
+	_effectiveLevel = (int) (_level * ( (float) _masterChannel->getLevel() / LBPIN_VALUE_STEPS ) );
 	
 	Log.Debug("[Chan] Num %d Pin %d [%d->%d]"CR,
 			_channelNumber, 

@@ -33,11 +33,11 @@ int Pin::getValue() {
 }
 
 void Pin::on() {
-	setValue(PIN_MAX_VALUE);
+	setValue(LBPIN_MAX_VALUE);
 }
 
 void Pin::off() {
-	setValue(PIN_MIN_VALUE);
+	setValue(LBPIN_MIN_VALUE);
 }
 
 void Pin::setMock(boolean value) {

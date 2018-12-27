@@ -36,8 +36,8 @@ Channel masterChannel;
 RGBOutput rgb;
 
 Sequencer sequencer;
-int sequenceChannelNumbers[SEQ_BANKS][SEQ_STEPS] = SEQ_CHANNEL_NUMBERS;
-Channel *sequenceChannels[SEQ_BANKS][SEQ_STEPS];
+int sequenceChannelNumbers[LBSEQ_BANKS][LBSEQ_STEPS] = LBSEQ_CHANNEL_NUMBERS;
+Channel *sequenceChannels[LBSEQ_BANKS][LBSEQ_STEPS];
 
 
 // Key to channel mappings
@@ -63,7 +63,7 @@ BluetoothHandler bluetoothHandler;
 char commandBuffer[LB_COMMAND_MAX_LENGTH];
 
 void setup() {
-	Log.Init(LOG_LEVEL_DEBUG, 115200L);
+	Log.Init(LOG_LEVEL_DEBUG, LBDEBUG_BAUD);
 	delay(1000);
 	Log.Info(CR"LightBrightMain starting"CR);
 	int nextChannel = 0;
@@ -114,8 +114,8 @@ void setup() {
 
 	// Initialize Sequencer
 	// Always load bank 0 by default
-	for(int bank=0; bank < SEQ_BANKS; bank++) {
-		for(int step=0; step < SEQ_STEPS; step++) {
+	for(int bank=0; bank < LBSEQ_BANKS; bank++) {
+		for(int step=0; step < LBSEQ_STEPS; step++) {
 			if(sequenceChannelNumbers[bank][step] >= 0 && sequenceChannelNumbers[bank][step] < LBCHANNEL_COUNT) {
 				sequencer.setChannel(bank, step, &channels[ sequenceChannelNumbers[bank][step] ]);
 			} else {
@@ -276,10 +276,10 @@ void handleBluetoothCommand() {
 void handleMasterCommand() {
 	switch (commandBuffer[2]) {
 	case '0':  // Off
-		masterChannel.setLevel(PIN_MIN_VALUE);
+		masterChannel.setLevel(LBPIN_MIN_VALUE);
 		break;
 	case '1':  // On
-		masterChannel.setLevel(PIN_MAX_VALUE);
+		masterChannel.setLevel(LBPIN_MAX_VALUE);
 		break;
 	case 'T':  // Toggle
 		masterChannel.toggle();
@@ -287,7 +287,7 @@ void handleMasterCommand() {
 	case 'L':  // Set level
 		int newLevel = 0;
 		sscanf(commandBuffer,"#ML%d~", &newLevel);
-		if(newLevel >= PIN_MIN_VALUE && newLevel <= PIN_MAX_VALUE) {
+		if(newLevel >= LBPIN_MIN_VALUE && newLevel <= LBPIN_MAX_VALUE) {
 			masterChannel.setLevel(newLevel);
 		} else {
 			Log.Error("Invalid master level value %d"CR, newLevel);
@@ -360,7 +360,7 @@ void handleSequenceCommand() {
 	switch(commandBuffer[2]) {
 	case 'B':
 		Log.Debug("hSB"CR);
-		if(newBank >=0 && newBank < SEQ_BANKS) {
+		if(newBank >=0 && newBank < LBSEQ_BANKS) {
 			sequencer.setBank(newBank);
 		} else {
 			Log.Error("Invalid bank '%c'"CR, newBank);

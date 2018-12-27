@@ -34,7 +34,7 @@ protected:
 	// zero-based
 	int _currentBank;
 	int _currentStep;
-	Channel *_stepChannels[SEQ_BANKS][SEQ_STEPS];
+	Channel *_stepChannels[LBSEQ_BANKS][LBSEQ_STEPS];
 	// Times are in microseconds
 	unsigned long _markStartTime;
 	unsigned long _lastChangeTime;

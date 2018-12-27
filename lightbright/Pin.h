@@ -13,10 +13,10 @@
 #include "Arduino.h"
 #include "Logging.h"
 
-#define PIN_MIN_VALUE 0
-#define PIN_MAX_VALUE 255
+#define LBPIN_MIN_VALUE 0
+#define LBPIN_MAX_VALUE 255
 // This is used in calculating ranges and effective levels as a divisor
-#define PIN_VALUE_STEPS 255L
+#define LBPIN_VALUE_STEPS 255L
 
 class Pin
 {

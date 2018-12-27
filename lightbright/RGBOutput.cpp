@@ -18,12 +18,12 @@
 #include "RGBOutput.h"
 
 RGBOutput::RGBOutput() {
-	_redPin = PIN_MIN_VALUE;
-	_greenPin = PIN_MIN_VALUE;
-	_bluePin = PIN_MIN_VALUE;
-	_redLevel = PIN_MIN_VALUE;
-	_greenLevel = PIN_MIN_VALUE;
-	_blueLevel = PIN_MIN_VALUE;
+	_redPin = LBPIN_MIN_VALUE;
+	_greenPin = LBPIN_MIN_VALUE;
+	_bluePin = LBPIN_MIN_VALUE;
+	_redLevel = LBPIN_MIN_VALUE;
+	_greenLevel = LBPIN_MIN_VALUE;
+	_blueLevel = LBPIN_MIN_VALUE;
 	setMode(MUSIC);
 }
 
@@ -42,9 +42,9 @@ void RGBOutput::begin(unsigned char redPin, unsigned char greenPin, unsigned cha
 	pinMode(_greenPin, OUTPUT);
 	pinMode(_bluePin, OUTPUT);
 
-	analogWrite(_redPin, PIN_MIN_VALUE);
-	analogWrite(_greenPin, PIN_MIN_VALUE);
-	analogWrite(_bluePin, PIN_MIN_VALUE);
+	analogWrite(_redPin, LBPIN_MIN_VALUE);
+	analogWrite(_greenPin, LBPIN_MIN_VALUE);
+	analogWrite(_bluePin, LBPIN_MIN_VALUE);
 
 	/** @TODO Put a feature switch on sound **/
 	pinMode(LBPIN_SOUND_RESET, OUTPUT);
@@ -56,10 +56,10 @@ void RGBOutput::begin(unsigned char redPin, unsigned char greenPin, unsigned cha
 }
 
 void RGBOutput::setLevels(int redLevel, int greenLevel, int blueLevel) {
-	float masterLevelMultiplier = (float) _masterChannel->getLevel() / PIN_VALUE_STEPS;
-	_redLevel   = constrain(redLevel   * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE) ;
-	_greenLevel = constrain(greenLevel * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE);
-	_blueLevel  = constrain(blueLevel  * masterLevelMultiplier, PIN_MIN_VALUE, PIN_MAX_VALUE);
+	float masterLevelMultiplier = (float) _masterChannel->getLevel() / LBPIN_VALUE_STEPS;
+	_redLevel   = constrain(redLevel   * masterLevelMultiplier, LBPIN_MIN_VALUE, LBPIN_MAX_VALUE) ;
+	_greenLevel = constrain(greenLevel * masterLevelMultiplier, LBPIN_MIN_VALUE, LBPIN_MAX_VALUE);
+	_blueLevel  = constrain(blueLevel  * masterLevelMultiplier, LBPIN_MIN_VALUE, LBPIN_MAX_VALUE);
 
 	analogWrite(_redPin,   _redLevel);
 	analogWrite(_greenPin, _greenLevel);
@@ -76,25 +76,25 @@ void RGBOutput::setColor(Color color) {
 
 	switch(color) {
 	case BLACK:
-		setLevels(PIN_MIN_VALUE,PIN_MIN_VALUE,PIN_MIN_VALUE);
+		setLevels(LBPIN_MIN_VALUE,LBPIN_MIN_VALUE,LBPIN_MIN_VALUE);
 		break;
 	case RED:
-		setLevels(PIN_MAX_VALUE,PIN_MIN_VALUE,PIN_MIN_VALUE);
+		setLevels(LBPIN_MAX_VALUE,LBPIN_MIN_VALUE,LBPIN_MIN_VALUE);
 		break;
 	case GREEN:
-		setLevels(PIN_MIN_VALUE,PIN_MAX_VALUE,PIN_MIN_VALUE);
+		setLevels(LBPIN_MIN_VALUE,LBPIN_MAX_VALUE,LBPIN_MIN_VALUE);
 		break;
 	case BLUE:
-		setLevels(PIN_MIN_VALUE,PIN_MIN_VALUE,PIN_MAX_VALUE);
+		setLevels(LBPIN_MIN_VALUE,LBPIN_MIN_VALUE,LBPIN_MAX_VALUE);
 		break;
 	case PURPLE:
-		setLevels(PIN_MAX_VALUE,PIN_MIN_VALUE,PIN_MAX_VALUE);
+		setLevels(LBPIN_MAX_VALUE,LBPIN_MIN_VALUE,LBPIN_MAX_VALUE);
 		break;
 	case YELLOW:
-		setLevels(PIN_MAX_VALUE,PIN_MAX_VALUE,PIN_MIN_VALUE);
+		setLevels(LBPIN_MAX_VALUE,LBPIN_MAX_VALUE,LBPIN_MIN_VALUE);
 		break;
 	case WHITE:
-		setLevels(PIN_MAX_VALUE,PIN_MAX_VALUE,PIN_MAX_VALUE);
+		setLevels(LBPIN_MAX_VALUE,LBPIN_MAX_VALUE,LBPIN_MAX_VALUE);
 		break;
 	}
 
@@ -108,7 +108,7 @@ void RGBOutput::setMode(Mode mode) {
 	_currentMode = mode;
 
 	if (_currentMode == NONE) {
-		setLevels(PIN_MIN_VALUE, PIN_MIN_VALUE, PIN_MIN_VALUE);
+		setLevels(LBPIN_MIN_VALUE, LBPIN_MIN_VALUE, LBPIN_MIN_VALUE);
 	}
 
 	Log.Info("RGB mode is now %d"CR, _currentMode);
@@ -138,11 +138,11 @@ void RGBOutput::updateMusic() {
 
 		spectrumValueLeft[i] = map(spectrumValueLeft[i], 0, 1023, 0, 255);
 		if (spectrumValueLeft[i] < LBSOUND_MINVALUE) {
-			spectrumValueLeft[i] = PIN_MIN_VALUE;
+			spectrumValueLeft[i] = LBPIN_MIN_VALUE;
 		}
 		spectrumValueRight[i] = map(spectrumValueRight[i], 0, 1023, 0, 255);
 		if (spectrumValueRight[i] < LBSOUND_MINVALUE) {
-			spectrumValueRight[i] = PIN_MIN_VALUE;
+			spectrumValueRight[i] = LBPIN_MIN_VALUE;
 		}
 		digitalWrite(LBPIN_SOUND_STROBE, HIGH);
 	}

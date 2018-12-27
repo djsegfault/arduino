@@ -16,10 +16,10 @@ void AnalogOutPin::setPinValue(int value) {
 
 	Log.Verbose("AnalogOutPin CALLED"CR);
 	
-	if(value < PIN_MIN_VALUE) {
-		safeValue = PIN_MIN_VALUE;
-	} else if(value > PIN_MAX_VALUE) {
-		safeValue = PIN_MAX_VALUE;
+	if(value < LBPIN_MIN_VALUE) {
+		safeValue = LBPIN_MIN_VALUE;
+	} else if(value > LBPIN_MAX_VALUE) {
+		safeValue = LBPIN_MAX_VALUE;
 	} else {
 		safeValue = value;
 	}

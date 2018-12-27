@@ -65,13 +65,13 @@ void Sequencer::reset() {
 	_currentStep = 0;
 
 	// Turn everything off
-	for(int step = 0; step < SEQ_STEPS; step++) {
+	for(int step = 0; step < LBSEQ_STEPS; step++) {
 		updateChannel(step, false);
 	}
 
 	if(_rgb != NULL) {
 		if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB || _rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
-			_rgb->setLevels(random(PIN_MIN_VALUE), random(PIN_MIN_VALUE), random(PIN_MIN_VALUE));
+			_rgb->setLevels(random(LBPIN_MIN_VALUE), random(LBPIN_MIN_VALUE), random(LBPIN_MIN_VALUE));
 		}
 	}
 }
@@ -87,7 +87,7 @@ void Sequencer::update() {
 		if(currentTime >= _nextChangeTime) {
 			// Time to change, move to the next step. Turn off the current channel then advance to next
 			updateChannel(_currentStep, false);
-			if(_currentStep == (SEQ_STEPS - 1)) {
+			if(_currentStep == (LBSEQ_STEPS - 1)) {
 				_currentStep = 0;
 			} else {
 				_currentStep++;
@@ -106,13 +106,13 @@ void Sequencer::update() {
 				if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB || _rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
 					if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB) {
 						// @TODO Use modulo so it can handle any number of steps
-						redLevel   = _currentStep == 0 ? PIN_MAX_VALUE : PIN_MIN_VALUE;
-						greenLevel = _currentStep == 1 ? PIN_MAX_VALUE : PIN_MIN_VALUE;
-						blueLevel  = _currentStep == 2 ? PIN_MAX_VALUE : PIN_MIN_VALUE;
+						redLevel   = _currentStep == 0 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
+						greenLevel = _currentStep == 1 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
+						blueLevel  = _currentStep == 2 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
 					} else if(_rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
-						redLevel   = random(PIN_MAX_VALUE);
-						greenLevel = random(PIN_MAX_VALUE);
-						blueLevel  = random(PIN_MAX_VALUE);
+						redLevel   = random(LBPIN_MAX_VALUE);
+						greenLevel = random(LBPIN_MAX_VALUE);
+						blueLevel  = random(LBPIN_MAX_VALUE);
 					}
 					Log.Info("[Seq]RGB [%d][%d][%d]"CR, redLevel, greenLevel, blueLevel);
 					_rgb->setLevels(redLevel, greenLevel, blueLevel);
