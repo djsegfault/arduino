@@ -20,6 +20,8 @@
 void setup() ;
 void loop() ;
 
+void checkCommandTimeout();
+void clearCommandBuffer();
 void handleKey(char key) ;
 void handleCommand() ;
 void handleBluetoothCommand();

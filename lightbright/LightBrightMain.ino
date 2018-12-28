@@ -61,6 +61,8 @@ BluetoothHandler bluetoothHandler;
 
 // Used for building commands
 char commandBuffer[LB_COMMAND_MAX_LENGTH];
+// Used for timing out commands
+unsigned long commandEntryTimeout = 0;
 
 void setup() {
 	Log.Init(LOG_LEVEL_DEBUG, LBDEBUG_BAUD);
@@ -134,7 +136,7 @@ void setup() {
 	serialHandler.begin();
 	bluetoothHandler.begin();
 
-	commandBuffer[0] = 0;
+	clearCommandBuffer();
 	Log.Info("Setup done"CR);
 	Log.Info(CR);
 	Log.Info(CR);
@@ -151,19 +153,27 @@ void handleKey(char key) {
 
 	// Are we building a command? Or is the the command start key?
 	if (commandBuffer[0] != 0 || key == LBKEY_COMMAND_START) {
+		// If this is the start of command, set the entry timeout
+		// Command entry must be finished by this time (now + 1 second) or it will be abandoned
+		if(key == LBKEY_COMMAND_START) {
+			commandEntryTimeout = millis() + 1000;
+		}
+		if (strlen(commandBuffer) > (LB_COMMAND_MAX_LENGTH - 2) ) {
+			Log.Error("Command '%s' too long, abandoning"CR, commandBuffer);
+			clearCommandBuffer();
+			return;
+		}
+
 		Log.Verbose("Adding to command, first char is %d length=%d Command before is '%s'"CR,
 				commandBuffer[0], strlen(commandBuffer), commandBuffer);
-		if (strlen(commandBuffer) < LB_COMMAND_MAX_LENGTH) {
-			commandBuffer[strlen(commandBuffer)] = key;
-			commandBuffer[strlen(commandBuffer) + 1] = NULL;
-			Log.Verbose("Command is now '%s'"CR, commandBuffer);
+		commandBuffer[strlen(commandBuffer)] = key;
+		commandBuffer[strlen(commandBuffer) + 1] = 0;
+		Log.Verbose("Command is now '%s'"CR, commandBuffer);
 
-			if (key == LBKEY_COMMAND_END) {
-				handleCommand();
-			}
-		} else {
-			Log.Error("Command '%s' too long, abandoning"CR, commandBuffer);
-			commandBuffer[0] = NULL;
+		// If this is the end of the command, then execute it
+		if (key == LBKEY_COMMAND_END) {
+			handleCommand();
+			clearCommandBuffer();
 		}
 		keyFound = true;
 	} else {
@@ -252,13 +262,6 @@ void handleCommand() {
 		Log.Error("Invalid command '%s'"CR, commandBuffer);
 		break;
 	}
-
-	// Clear the buffer after command is processed
-	// Initialize command buffer
-	for (int x = 0; commandBuffer[x] != 0; x++) {
-		commandBuffer[x] = 0;
-	}
-
 }
 
 
@@ -356,10 +359,8 @@ void handleRGBCommand() {
 
 void handleSequenceCommand() {
 	int newBank = commandBuffer[3] - '0';
-	Log.Debug("hS"CR);
 	switch(commandBuffer[2]) {
 	case 'B':
-		Log.Debug("hSB"CR);
 		if(newBank >=0 && newBank < LBSEQ_BANKS) {
 			sequencer.setBank(newBank);
 		} else {
@@ -397,8 +398,24 @@ void clearMomentaryKey(int x) {
 	}
 }
 
+void checkCommandTimeout() {
+	// Are we building a command? Or is the the command start key?
+	if (commandBuffer[0] != 0 && millis() >= commandEntryTimeout) {
+		Log.Error("Command '%s' timed out, abandoning"CR, commandBuffer);
+		clearCommandBuffer();
+	}
+}
+
+void clearCommandBuffer() {
+	for(int x=0; x<LB_COMMAND_MAX_LENGTH; x++) {
+		commandBuffer[x] = 0;#S0~
+	}
+}
+
 void loop() {
 	char key;
+
+	checkCommandTimeout();
 
 #ifdef LBC_KEYBOARD
 	key = keyboardHandler.checkKeyboard();
