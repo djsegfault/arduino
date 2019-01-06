@@ -408,7 +408,7 @@ void checkCommandTimeout() {
 
 void clearCommandBuffer() {
 	for(int x=0; x<LB_COMMAND_MAX_LENGTH; x++) {
-		commandBuffer[x] = 0;#S0~
+		commandBuffer[x] = 0;
 	}
 }
 
