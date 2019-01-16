@@ -137,9 +137,11 @@ void setup() {
 	bluetoothHandler.begin();
 
 	clearCommandBuffer();
+	Log.Info("Memory available: %d"CR,memoryAvailable());
 	Log.Info("Setup done"CR);
 	Log.Info(CR);
 	Log.Info(CR);
+
 }
 
 void handleKey(char key) {
@@ -262,6 +264,7 @@ void handleCommand() {
 		Log.Error("Invalid command '%s'"CR, commandBuffer);
 		break;
 	}
+	Log.Info("Memory available: %d"CR,memoryAvailable());
 }
 
 
@@ -408,8 +411,26 @@ void checkCommandTimeout() {
 
 void clearCommandBuffer() {
 	for(int x=0; x<LB_COMMAND_MAX_LENGTH; x++) {
-		commandBuffer[x] = 0;#S0~
+		commandBuffer[x] = 0;
 	}
+}
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
+
+int memoryAvailable() {
+  char top;
+#ifdef __arm__
+  return &top - reinterpret_cast<char*>(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+  return &top - __brkval;
+#else  // __arm__
+  return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+#endif  // __arm__
 }
 
 void loop() {

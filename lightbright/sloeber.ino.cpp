@@ -31,7 +31,7 @@ void handleSequenceCommand();
 void handleTextCommand();
 
 void clearMomentaryKey(int x) ;
-
+int memoryAvailable();
 
 #include "LightBrightMain.ino"
 

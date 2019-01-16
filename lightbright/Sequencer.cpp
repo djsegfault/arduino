@@ -105,10 +105,33 @@ void Sequencer::update() {
 			if(_rgb != NULL) {
 				if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB || _rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
 					if(_rgb->getMode() == RGBOutput::SEQUENCE_RGB) {
-						// @TODO Use modulo so it can handle any number of steps
-						redLevel   = _currentStep == 0 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
-						greenLevel = _currentStep == 1 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
-						blueLevel  = _currentStep == 2 ? LBPIN_MAX_VALUE : LBPIN_MIN_VALUE;
+						switch(_currentStep) {
+						case 0:
+							redLevel   = LBPIN_MAX_VALUE;
+							greenLevel = LBPIN_MIN_VALUE;
+							blueLevel  = LBPIN_MIN_VALUE;
+							break;
+						case 1:
+							redLevel   = LBPIN_MIN_VALUE;
+							greenLevel = LBPIN_MAX_VALUE;
+							blueLevel  = LBPIN_MIN_VALUE;
+							break;
+						case 2:
+							redLevel   = LBPIN_MIN_VALUE;
+							greenLevel = LBPIN_MIN_VALUE;
+							blueLevel  = LBPIN_MAX_VALUE;
+							break;
+						case 3:
+							redLevel   = LBPIN_MAX_VALUE * .8;
+							greenLevel = LBPIN_MAX_VALUE * .8;
+							blueLevel  = LBPIN_MAX_VALUE * .8;
+							break;
+						default:
+							redLevel   = LBPIN_MIN_VALUE;
+							greenLevel = LBPIN_MIN_VALUE;
+							blueLevel  = LBPIN_MIN_VALUE;
+							break;
+						}
 					} else if(_rgb->getMode() == RGBOutput::SEQUENCE_RANDOM) {
 						redLevel   = random(LBPIN_MAX_VALUE);
 						greenLevel = random(LBPIN_MAX_VALUE);
