@@ -25,7 +25,7 @@
 
 #include "OLEDMenuRenderer.h"
 
-
+/*
 OLEDMenuRenderer::OLEDMenuRenderer(Adafruit_SSD1306 oled, int pixels_wide, int pixels_high) {
   this->oled = oled;
   this->pixels_wide = pixels_wide;
@@ -35,6 +35,9 @@ OLEDMenuRenderer::OLEDMenuRenderer(Adafruit_SSD1306 oled, int pixels_wide, int p
   oled.setCursor(0, 0);
   oled.display();
 }
+*/
+
+/*
 
 void OLEDMenuRenderer::render(Menu const& menu) const {
   int currentRow = 0;
@@ -74,3 +77,4 @@ void OLEDMenuRenderer::render_numeric_menu_item(NumericMenuItem const& menu_item
 void OLEDMenuRenderer::render_menu(Menu const& menu) const {
   oled.print(menu.get_name());
 }
+*/

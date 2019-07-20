@@ -1,9 +1,13 @@
+/*
+ * This program is a technology proof of concept, working out the details of working with the OLED display 
+ * over I2C and the capacitive touch sensors.  Some of this will be included in the main application, 
+ * but I like to keep proof of concept work separate to verify the hardware when things don't work
+ * in the main application.  Doing the proof of concept first also means I have the capabilities I need worked
+ * out for the main application.
+ */
 
 #include <Adafruit_Circuit_Playground.h>
-
-
 #include <Wire.h>
-
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
