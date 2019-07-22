@@ -1,21 +1,21 @@
 /*
- * This software is the driver for my "cyberbracer" cosplay. 
- * See https://github.com/djsegfault/arduino/tree/master/cyberbracer for source and project information
- * 
- * Copyright 2019 David Kramer david@thekramers.net
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+   This software is the driver for my "cyberbracer" cosplay.
+   See https://github.com/djsegfault/arduino/tree/master/cyberbracer for source and project information
+
+   Copyright 2019 David Kramer david@thekramers.net
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 ////-------------------------------------------------------------------- Includes
 #include <Adafruit_Circuit_Playground.h>
@@ -23,76 +23,98 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <MenuSystem.h>
-#include "OLEDMenuRenderer.h"
 
 ////-------------------------------------------------------------------- Globals
 //// BUTTONS
-int CAP_THRESHOLD=450;          //May change, but global. Used for capacitive touch sensitivity
-const uint8_t BTN_UP=0;         //readCap for A6
-const uint8_t BTN_DOWN=1;       //readCap for A7
-const uint8_t BTN_SELECT=9;     //readCap for A2
-const uint8_t BTN_BACK=10;      //readCap for A3
-const uint8_t BTN_USER1=6;      //readCap for A1
-const uint8_t BTN_USER2=12;     //readCap for A0
+int CAP_THRESHOLD = 450;        //May change, but global. Used for capacitive touch sensitivity
+const uint8_t BTN_UP = 0;       //readCap for A6
+const uint8_t BTN_DOWN = 1;     //readCap for A7
+const uint8_t BTN_SELECT = 9;   //readCap for A2
+const uint8_t BTN_BACK = 10;    //readCap for A3
+const uint8_t BTN_USER1 = 6;    //readCap for A1
+const uint8_t BTN_USER2 = 12;   //readCap for A0
 
 //// I2C
-const uint8_t OLED_I2C_ADDRESS=0x3C;
+const uint8_t OLED_I2C_ADDRESS = 0x3C;
 
 //// OLED
-const int SCREEN_WIDTH=128;     // OLED display width, in pixels
-const int SCREEN_HEIGHT=64;     // OLED display height, in pixels
+const int SCREEN_WIDTH = 128;   // OLED display width, in pixels
+const int SCREEN_HEIGHT = 64;   // OLED display height, in pixels
 // -1 did not work for me, but 6 does (A1) because the signal for OLED reset looks so different from CapTouch
-const uint8_t OLED_RESET=6;     // Reset pin # (or -1 if sharing Arduino reset pin)
+const uint8_t OLED_RESET = 6;   // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
 //// MenuSystem
 
 class MyRenderer : public MenuComponentRenderer {
-public:
+  public:
     void render(Menu const& menu) const {
-        oled.clearDisplay();
-        oled.setCursor(0, 0);
+      oled.clearDisplay();
+      oled.setCursor(0, 0);
+      Serial.print("Displaying menu");
+      Serial.println(menu.get_name());
 
-        if (menu.get_name() == "") {
-            oled.println("Main Menu");
+      if (menu.get_name() == "") {
+        oled.println("Main Menu");
+      } else {
+        oled.println(menu.get_name());
+      }
+
+      for (int i = 0; i < menu.get_num_components(); ++i) {
+        MenuComponent const* cp_m_comp = menu.get_menu_component(i);
+        if (cp_m_comp->is_current()) {
+          oled.print(">");
         } else {
-            oled.println(menu.get_name());
+          oled.print(" ");
         }
+        cp_m_comp->render(*this);
 
-        for (int i = 0; i < menu.get_num_components(); ++i) {
-            MenuComponent const* cp_m_comp = menu.get_menu_component(i);
-            if (cp_m_comp->is_current()) {
-                oled.print(">");
-            } else {
-                oled.print(" ");
-            }
-            cp_m_comp->render(*this);
-
-            oled.println("");
-        }
+        oled.println("");
+      }
+      Serial.println("Displaying menu");
+      oled.display();
     }
 
     void render_menu_item(MenuItem const& menu_item) const {
-        oled.print(menu_item.get_name());
+      Serial.print("Rendering menu item ");
+      Serial.println(menu_item.get_name());
+      oled.print(menu_item.get_name());
     }
 
     void render_back_menu_item(BackMenuItem const& menu_item) const {
-        oled.print(menu_item.get_name());
+      oled.print(menu_item.get_name());
     }
 
     void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
-        oled.print(menu_item.get_name());
+      Serial.print("Rendering menu item");
+      Serial.println(menu_item.get_name());
+      oled.print(menu_item.get_name());
     }
 
     void render_menu(Menu const& menu) const {
-        oled.print(menu.get_name());
+      oled.print(menu.get_name());
     }
 };
 
+void mainMenuHandler(MenuComponent* p_menu_component) {
+  Serial.print("[");
+  Serial.print(p_menu_component->get_name());
+  Serial.println("] selected");
+  oled.clearDisplay();
+  oled.setCursor(0, 0);
+  oled.print("[");
+  oled.print(p_menu_component->get_name());
+  oled.print("] selected");
+  delay(1500);
+}
 
 MyRenderer menuRenderer;
 MenuSystem menuSystem(menuRenderer);
+
+MenuItem mmSensors("Sensors", &mainMenuHandler);
+MenuItem mmAnimations("Animations", &mainMenuHandler);
+MenuItem mmSetup("Setup", &mainMenuHandler);
 
 //// Operations
 boolean DEBUG_MODE = true;
@@ -102,7 +124,7 @@ boolean isCapPressed(uint8_t capNum) {
   int capValue = CircuitPlayground.readCap(capNum, 30);
   if ( capValue > CAP_THRESHOLD) {
     CircuitPlayground.playTone(262, 10);
-    if(DEBUG_MODE == true) {
+    if (DEBUG_MODE == true) {
       Serial.print("Cap ");
       Serial.print(capNum);
       Serial.print(" pressed, value is ");
@@ -115,12 +137,14 @@ boolean isCapPressed(uint8_t capNum) {
 }
 
 void debug(char* message) {
-  if(DEBUG_MODE == true) {
+  if (DEBUG_MODE == true) {
     Serial.println(message);
-    oled.clearDisplay();
-    oled.setCursor(0, 0);
-    oled.println(message);
-    oled.display();
+    /*
+      oled.clearDisplay();
+      oled.setCursor(0, 0);
+      oled.println(message);
+      oled.display();
+    */
   }
 }
 
@@ -141,25 +165,46 @@ void setup() {
     for (;;); // Don't proceed, loop forever
   }
   Serial.println("Initialized oled");
-  
+
+  // Build the menus
+    menuSystem.get_root_menu().add_item(&mmSensors);
+    menuSystem.get_root_menu().add_item(&mmAnimations);
+    menuSystem.get_root_menu().add_item(&mmSetup);
+
+  Serial.println("Starting");
+  //Serial.print("Debug is ");
+  //Serial.println(DEBUG_MODE);
+  delay(1000);
+  Serial.println("Starting 1");
+  delay(1000);
+  Serial.println("Starting 2");
+  delay(1000);
+  Serial.println("Starting 3");
+  delay(1000);
+
 
   // Clear the buffer
   oled.clearDisplay();
   oled.setTextSize(1);
   oled.setTextColor(WHITE);
   oled.setCursor(0, 0);
+  oled.println("OLED is working!!");
   oled.display();
-  Serial.println("Starting");
-  Serial.print("Debug is ");
-  Serial.println(DEBUG_MODE);
+  Serial.println("OLED should be working");
+  delay(5000);
+
+
+  menuSystem.display();
+  Serial.println("Menu should be displayed");
+
 }
 
 void deleteme() {
-  int a=1;
+  int a = 1;
 }
 
 void loop() {
-  //Serial.println("Top of loop");
+  Serial.println("Top of loop");
   if (CircuitPlayground.rightButton()) {
     debug("Right");
   }
@@ -170,23 +215,32 @@ void loop() {
 
   if (isCapPressed(BTN_UP)) {
     debug("Up");
+    menuSystem.prev();
+    menuSystem.display();
   }
   if (isCapPressed(BTN_DOWN)) {
     debug("Down");
+    menuSystem.next();
+    menuSystem.display();
   }
   if (isCapPressed(BTN_SELECT)) {
     debug("Select");
+    menuSystem.select();
+    delay(2000);
+    menuSystem.display();
   }
   if (isCapPressed(BTN_BACK)) {
     debug("Back");
+    menuSystem.back();
+    menuSystem.display();
   }
   if (isCapPressed(BTN_USER1)) {
     debug("User 1");
   }
   /*
-  if (isCapPressed(BTN_USER2)) {
+    if (isCapPressed(BTN_USER2)) {
     debug("User 2");
-  }
+    }
   */
 
   digitalWrite(LED_BUILTIN, 1);
