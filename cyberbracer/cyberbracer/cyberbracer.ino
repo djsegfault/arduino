@@ -44,9 +44,128 @@ const int SCREEN_HEIGHT = 64;   // OLED display height, in pixels
 const uint8_t OLED_RESET = 6;   // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+//// Operations
+boolean DEBUG_MODE = true;
 
-//// MenuSystem
+char messageBuffer[200];
 
+
+
+////-------------------------------------------------------------------- General functions
+boolean isCapPressed(uint8_t capNum) {
+  int capValue = CircuitPlayground.readCap(capNum, 30);
+  if ( capValue > CAP_THRESHOLD) {
+    CircuitPlayground.playTone(262, 10);
+    if (DEBUG_MODE == true) {
+      Serial.print("Cap ");
+      Serial.print(capNum);
+      Serial.print(" pressed, value is ");
+      Serial.println(capValue);
+    }
+    return true;
+  }
+
+  return false;
+}
+
+void debug(char* message) {
+  if (DEBUG_MODE == true) {
+    Serial.println(message);
+    /*
+      oled.clearDisplay();
+      oled.setCursor(0, 0);
+      oled.println(message);
+      oled.display();
+    */
+  }
+}
+
+
+
+////-------------------------------------------------------------------- Animations
+// TO DO make virtual?
+class Activity {
+  protected:
+    double currTime;          // Current time in millis, updated every call to update()
+    double lastUpdateTime;    // Last time the update ran
+    double interval;          // How many millis between updates
+  public:
+    void begin() {
+      lastUpdateTime = millis();
+    }
+
+    void update() {
+    }
+
+    boolean isTimeToUpdate() {
+      currTime = millis();
+      if (currTime - lastUpdateTime > interval) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    char* getName() {
+      return "Activity";
+    }
+};
+
+class NullActivity : public Activity {
+  private:
+  public:
+    void begin() {
+      debug("NulllActivity begins");
+    }
+
+    void update() {
+      debug("NulllActivity updates");
+    }
+
+    char* getName() {
+      return "NullActivity";
+    }};
+
+class BlinkActivity : public Activity {
+  private:
+    boolean isLightOn = false;
+    int interval = 2000;
+  public:
+    void begin() {
+      debug("LightActivity begins");
+    }
+
+    void update() {
+      debug("LightActivity updating?");
+      if (isTimeToUpdate()) {
+        debug("LightActivity updating");
+        if (isLightOn == true) {
+          isLightOn = false;
+          digitalWrite(LED_BUILTIN, 0);
+        } else {
+          isLightOn = true;
+          digitalWrite(LED_BUILTIN, 1);
+        }
+
+        lastUpdateTime = millis();
+      }
+    }
+
+    char* getName() {
+      return "BlinkActivity";
+    }};
+
+// The singletons for each activity
+NullActivity nullActivity;
+BlinkActivity blinkActivity;
+
+
+////-------------------------------------------------------------------- MenuSystem
+
+// This is the current activity as updated from the menus
+Activity *currentActivity;
+
+//// Rendering classes
 class MyRenderer : public MenuComponentRenderer {
   public:
     void render(Menu const& menu) const {
@@ -97,57 +216,58 @@ class MyRenderer : public MenuComponentRenderer {
     }
 };
 
+//// Menu items
+MyRenderer menuRenderer;
+MenuSystem menuSystem(menuRenderer);
+
+Menu mmSensorsMenu("Sensors");
+MenuItem sensorLight("Light", &mainMenuHandler);
+MenuItem sensorSound("Sound", &mainMenuHandler);
+
+Menu mmAnimMenu("Animations");
+MenuItem animDemo("Demo", &mainMenuHandler);
+MenuItem animLight("Flashlight", &mainMenuHandler);
+
+Menu mmSetupMenu("Setup", &mainMenuHandler);
+MenuItem setupSenseUp("CapSense Up", &mainMenuHandler);
+MenuItem setupSenseDown("CapSense Down", &mainMenuHandler);
+MenuItem setupDebugOn("Debug On", &mainMenuHandler);
+MenuItem setupDebugOff("Debug Off", &mainMenuHandler);
+
+
+//// menu selection handlers
 void mainMenuHandler(MenuComponent* p_menu_component) {
   Serial.print("[");
   Serial.print(p_menu_component->get_name());
   Serial.println("] selected");
-  oled.clearDisplay();
-  oled.setCursor(0, 0);
-  oled.print("[");
-  oled.print(p_menu_component->get_name());
-  oled.print("] selected");
-  delay(1500);
-}
 
-MyRenderer menuRenderer;
-MenuSystem menuSystem(menuRenderer);
-
-MenuItem mmSensors("Sensors", &mainMenuHandler);
-MenuItem mmAnimations("Animations", &mainMenuHandler);
-MenuItem mmSetup("Setup", &mainMenuHandler);
-
-//// Operations
-boolean DEBUG_MODE = true;
-
-////-------------------------------------------------------------------- Functions
-boolean isCapPressed(uint8_t capNum) {
-  int capValue = CircuitPlayground.readCap(capNum, 30);
-  if ( capValue > CAP_THRESHOLD) {
-    CircuitPlayground.playTone(262, 10);
-    if (DEBUG_MODE == true) {
-      Serial.print("Cap ");
-      Serial.print(capNum);
-      Serial.print(" pressed, value is ");
-      Serial.println(capValue);
-    }
-    return true;
+  if (strcmp(p_menu_component->get_name(), "Light") == 0) {
+    Serial.println("Setting to Light");
+    currentActivity = &blinkActivity;
+    currentActivity->begin();
+  } else if (strcmp(p_menu_component->get_name(), "Sound") == 0) {
+    Serial.println("Setting to Null");
+    currentActivity = &nullActivity;
+    currentActivity->begin();
+  } else {
+    Serial.println("UNKNOWN ACTIVITY");
   }
 
-  return false;
-}
+  sprintf(messageBuffer,"nullActivity is %p  blinkActivity '%s' is %p current is %p", 
+  &nullActivity, 
+  blinkActivity.getName(), 
+  &blinkActivity, 
+  currentActivity);
+  Serial.println(messageBuffer);
 
-void debug(char* message) {
-  if (DEBUG_MODE == true) {
-    Serial.println(message);
-    /*
-      oled.clearDisplay();
-      oled.setCursor(0, 0);
-      oled.println(message);
-      oled.display();
-    */
-  }
-}
+  Serial.print(" Blink activity is ");
+  Serial.println(blinkActivity.getName());
 
+
+  Serial.print(" Current activity is ");
+  Serial.println(currentActivity->getName());
+
+}
 
 
 ////-------------------------------------------------------------------- Main
@@ -166,10 +286,25 @@ void setup() {
   }
   Serial.println("Initialized oled");
 
+
   // Build the menus
-    menuSystem.get_root_menu().add_item(&mmSensors);
-    menuSystem.get_root_menu().add_item(&mmAnimations);
-    menuSystem.get_root_menu().add_item(&mmSetup);
+  menuSystem.get_root_menu().add_menu(&mmSensorsMenu);
+  menuSystem.get_root_menu().add_menu(&mmAnimMenu);
+  menuSystem.get_root_menu().add_menu(&mmSetupMenu);
+
+  mmSensorsMenu.add_item(&sensorLight);
+  mmSensorsMenu.add_item(&sensorSound);
+
+  mmAnimMenu.add_item(&animDemo);
+  mmAnimMenu.add_item(&animLight);
+
+  mmSetupMenu.add_item(&setupSenseUp);
+  mmSetupMenu.add_item(&setupSenseDown);
+  mmSetupMenu.add_item(&setupDebugOn);
+  mmSetupMenu.add_item(&setupDebugOff);
+
+  currentActivity = &blinkActivity;
+
 
   Serial.println("Starting");
   //Serial.print("Debug is ");
@@ -199,12 +334,8 @@ void setup() {
 
 }
 
-void deleteme() {
-  int a = 1;
-}
-
 void loop() {
-  Serial.println("Top of loop");
+  //Serial.println("Top of loop");
   if (CircuitPlayground.rightButton()) {
     debug("Right");
   }
@@ -243,7 +374,11 @@ void loop() {
     }
   */
 
-  digitalWrite(LED_BUILTIN, 1);
-  delay(200);
-  digitalWrite(LED_BUILTIN, 0);
+  currentActivity->update();
+
+  /*
+    digitalWrite(LED_BUILTIN, 1);
+    delay(200);
+    digitalWrite(LED_BUILTIN, 0);
+  */
 }
