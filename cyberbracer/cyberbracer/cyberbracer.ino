@@ -23,6 +23,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <MenuSystem.h>
+#include "Activities.h"
 
 ////-------------------------------------------------------------------- Globals
 //// BUTTONS
@@ -81,77 +82,6 @@ void debug(char* message) {
 }
 
 
-
-////-------------------------------------------------------------------- Animations
-// TO DO make virtual?
-class Activity {
-  protected:
-    unsigned long currTime = 0;      // Current time in millis, updated every call to update()
-    unsigned long lastUpdateTime = 0; // Last time the update ran
-    unsigned long interval = 0;      // How many millis between updates
-    char* name;                      // Name of the activity
-  public:
-    Activity(char* name, unsigned long interval) {
-      this->name = name;
-      this->interval = interval;
-    }
-
-    virtual void update() {
-    }
-
-    char* getName() {
-      return name;
-    }
-
-    boolean isTimeToUpdate() {
-      currTime = millis();
-      sprintf(messageBuffer, "Update? %lu %lu %lu", currTime, lastUpdateTime, interval);
-      Serial.println(messageBuffer);
-      if ((lastUpdateTime == 0) || (currTime - lastUpdateTime > interval) ) {
-        lastUpdateTime = currTime;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-};
-
-class NullActivity : public Activity {
-  private:
-  public:
-  NullActivity() : Activity("NullActivity", 1000) {
-    }
-    
-    void update() {
-      Activity::update();
-      debug("NulllActivity updates");
-    }
-};
-
-class BlinkActivity : public Activity {
-  private:
-    boolean isLightOn = false;
-  public:
-    BlinkActivity() : Activity("BlinkActivity", 2000) {
-    }
-    
-    void update() {
-      debug("LightActivity updating?");
-      if (isTimeToUpdate()) {
-        debug("LightActivity updating");
-        if (isLightOn == true) {
-          isLightOn = false;
-          digitalWrite(LED_BUILTIN, 0);
-        } else {
-          isLightOn = true;
-          digitalWrite(LED_BUILTIN, 1);
-        }
-
-        lastUpdateTime = millis();
-      }
-    }
-};
 
 // The singletons for each activity
 NullActivity nullActivity;
