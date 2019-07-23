@@ -86,55 +86,56 @@ void debug(char* message) {
 // TO DO make virtual?
 class Activity {
   protected:
-    double currTime;          // Current time in millis, updated every call to update()
-    double lastUpdateTime;    // Last time the update ran
-    double interval;          // How many millis between updates
+    unsigned long currTime = 0;      // Current time in millis, updated every call to update()
+    unsigned long lastUpdateTime = 0; // Last time the update ran
+    unsigned long interval = 0;      // How many millis between updates
+    char* name;                      // Name of the activity
   public:
-    void begin() {
-      lastUpdateTime = millis();
+    Activity(char* name, unsigned long interval) {
+      this->name = name;
+      this->interval = interval;
     }
 
-    void update() {
+    virtual void update() {
+    }
+
+    char* getName() {
+      return name;
     }
 
     boolean isTimeToUpdate() {
       currTime = millis();
-      if (currTime - lastUpdateTime > interval) {
+      sprintf(messageBuffer, "Update? %lu %lu %lu", currTime, lastUpdateTime, interval);
+      Serial.println(messageBuffer);
+      if ((lastUpdateTime == 0) || (currTime - lastUpdateTime > interval) ) {
+        lastUpdateTime = currTime;
         return true;
       } else {
         return false;
       }
     }
 
-    char* getName() {
-      return "Activity";
-    }
 };
 
 class NullActivity : public Activity {
   private:
   public:
-    void begin() {
-      debug("NulllActivity begins");
+  NullActivity() : Activity("NullActivity", 1000) {
     }
-
+    
     void update() {
+      Activity::update();
       debug("NulllActivity updates");
     }
-
-    char* getName() {
-      return "NullActivity";
-    }};
+};
 
 class BlinkActivity : public Activity {
   private:
     boolean isLightOn = false;
-    int interval = 2000;
   public:
-    void begin() {
-      debug("LightActivity begins");
+    BlinkActivity() : Activity("BlinkActivity", 2000) {
     }
-
+    
     void update() {
       debug("LightActivity updating?");
       if (isTimeToUpdate()) {
@@ -150,10 +151,7 @@ class BlinkActivity : public Activity {
         lastUpdateTime = millis();
       }
     }
-
-    char* getName() {
-      return "BlinkActivity";
-    }};
+};
 
 // The singletons for each activity
 NullActivity nullActivity;
@@ -244,20 +242,18 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   if (strcmp(p_menu_component->get_name(), "Light") == 0) {
     Serial.println("Setting to Light");
     currentActivity = &blinkActivity;
-    currentActivity->begin();
   } else if (strcmp(p_menu_component->get_name(), "Sound") == 0) {
     Serial.println("Setting to Null");
     currentActivity = &nullActivity;
-    currentActivity->begin();
   } else {
     Serial.println("UNKNOWN ACTIVITY");
   }
 
-  sprintf(messageBuffer,"nullActivity is %p  blinkActivity '%s' is %p current is %p", 
-  &nullActivity, 
-  blinkActivity.getName(), 
-  &blinkActivity, 
-  currentActivity);
+  sprintf(messageBuffer, "nullActivity is %p  blinkActivity '%s' is %p current is %p",
+          &nullActivity,
+          blinkActivity.getName(),
+          &blinkActivity,
+          currentActivity);
   Serial.println(messageBuffer);
 
   Serial.print(" Blink activity is ");
@@ -304,7 +300,6 @@ void setup() {
   mmSetupMenu.add_item(&setupDebugOff);
 
   currentActivity = &blinkActivity;
-
 
   Serial.println("Starting");
   //Serial.print("Debug is ");
@@ -374,6 +369,7 @@ void loop() {
     }
   */
 
+  currentActivity->getName();
   currentActivity->update();
 
   /*
