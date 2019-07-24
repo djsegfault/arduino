@@ -10,28 +10,59 @@ class Activity {
   public:
     Activity(char* name, unsigned long interval);
     virtual void update();
-    char* getName();
+    virtual void leftButtonPressed();
+    virtual void rightButtonPressed();
 
+    char* getName();
     boolean isTimeToUpdate();
+    void updated();
 };
 
 class NullActivity: public Activity {
   public:
     NullActivity();
     void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
 };
 
 class BlinkActivity: public Activity {
   public:
     BlinkActivity();
     void update();
-    private:
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
     boolean isLightOn;
+};
+
+
+class SoundActivity: public Activity {
+  public:
+    SoundActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
+    int16_t maxLevel;
+};
+
+class SoundColorWheelActivity: public Activity {
+  public:
+    SoundColorWheelActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
+    int16_t maxLevel;
+    uint8_t currPixel;
 };
 
 
 // The singletons for each activity
 NullActivity nullActivity;
 BlinkActivity blinkActivity;
+SoundActivity soundActivity;
+SoundColorWheelActivity soundColorWheelActivity;
 
 #endif

@@ -94,6 +94,7 @@ MenuSystem menuSystem(menuRenderer);
 Menu mmSensorsMenu("Sensors");
 MenuItem sensorLight("Light", &mainMenuHandler);
 MenuItem sensorSound("Sound", &mainMenuHandler);
+MenuItem sensorSoundColorWheel("SoundColorWheel", &mainMenuHandler);
 
 Menu mmAnimMenu("Animations");
 MenuItem animDemo("Demo", &mainMenuHandler);
@@ -116,22 +117,14 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
     Serial.println("Setting to Light");
     currentActivity = &blinkActivity;
   } else if (strcmp(p_menu_component->get_name(), "Sound") == 0) {
-    Serial.println("Setting to Null");
-    currentActivity = &nullActivity;
+    Serial.println("Setting to Sound");
+    currentActivity = &soundActivity;
+  } else if (strcmp(p_menu_component->get_name(), "SoundColorWheel") == 0) {
+    Serial.println("Setting to SoundColorWheel");
+    currentActivity = &soundColorWheelActivity;
   } else {
     Serial.println("UNKNOWN ACTIVITY");
   }
-
-  sprintf(messageBuffer, "nullActivity is %p  blinkActivity '%s' is %p current is %p",
-          &nullActivity,
-          blinkActivity.getName(),
-          &blinkActivity,
-          currentActivity);
-  Serial.println(messageBuffer);
-
-  Serial.print(" Blink activity is ");
-  Serial.println(blinkActivity.getName());
-
 
   Serial.print(" Current activity is ");
   Serial.println(currentActivity->getName());
@@ -163,6 +156,7 @@ void setup() {
 
   mmSensorsMenu.add_item(&sensorLight);
   mmSensorsMenu.add_item(&sensorSound);
+  mmSensorsMenu.add_item(&sensorSoundColorWheel);
 
   mmAnimMenu.add_item(&animDemo);
   mmAnimMenu.add_item(&animLight);
@@ -235,14 +229,20 @@ void loop() {
   if (isCapPressed(BTN_USER1)) {
     debug("User 1");
   }
-  /*
-    if (isCapPressed(BTN_USER2)) {
-    debug("User 2");
-    }
-  */
+  if (CircuitPlayground.leftButton()) {
+    debug("leftButton");
+    currentActivity->leftButtonPressed();
+  }
+  if (CircuitPlayground.rightButton()) {
+    debug("rightButton");
+    currentActivity->rightButtonPressed();
+  }
 
   currentActivity->getName();
-  currentActivity->update();
+  if(currentActivity->isTimeToUpdate()) {
+    currentActivity->update();
+    currentActivity->updated();
+  }
 
   /*
     digitalWrite(LED_BUILTIN, 1);
