@@ -14,9 +14,16 @@ char* Activity::getName() {
 
 boolean Activity::isTimeToUpdate() {
   currTime = millis();
-  sprintf(messageBuffer, "Update? %lu %lu %lu", currTime, lastUpdateTime, interval);
-  Serial.println(messageBuffer);
-  if ((lastUpdateTime == 0) || (currTime - lastUpdateTime > interval) ) {
+  /*
+   // For debugging activity updates, should not be in normal debugging
+    sprintf(messageBuffer, "Update? %lu %lu %lu", currTime, lastUpdateTime, interval);
+    Serial.println(messageBuffer);
+  */
+
+  // If this is the first time, run the update to start the cycle
+  // If an Activity doesn't want to do updates, set interval to 0
+  
+  if ( (interval > 0) && (lastUpdateTime == 0 || currTime - lastUpdateTime > interval) ) {
     lastUpdateTime = currTime;
     return true;
   } else {
@@ -24,12 +31,14 @@ boolean Activity::isTimeToUpdate() {
   }
 }
 
-NullActivity::NullActivity() : Activity("NullActivity", 1000) {
+NullActivity::NullActivity() : Activity("NullActivity", 0) {
 }
 
 void NullActivity::update() {
-  Activity::update();
-  debug("NulllActivity updates");
+  if (isTimeToUpdate()) {
+    Activity::update();
+    debug("NulllActivity updates");
+  }
 }
 
 BlinkActivity::BlinkActivity() : Activity("BlinkActivity", 2000) {
@@ -37,7 +46,6 @@ BlinkActivity::BlinkActivity() : Activity("BlinkActivity", 2000) {
 }
 
 void BlinkActivity::update() {
-  debug("LightActivity updating?");
   if (isTimeToUpdate()) {
     debug("LightActivity updating");
     if (isLightOn == true) {

@@ -29,4 +29,9 @@ class BlinkActivity: public Activity {
     boolean isLightOn;
 };
 
+
+// The singletons for each activity
+NullActivity nullActivity;
+BlinkActivity blinkActivity;
+
 #endif

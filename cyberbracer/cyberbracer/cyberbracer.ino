@@ -82,13 +82,6 @@ void debug(char* message) {
   }
 }
 
-
-
-// The singletons for each activity
-NullActivity nullActivity;
-BlinkActivity blinkActivity;
-
-
 ////-------------------------------------------------------------------- MenuSystem
 
 // This is the current activity as updated from the menus
