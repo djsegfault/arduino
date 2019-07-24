@@ -23,6 +23,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <MenuSystem.h>
+#include "OLEDMenuRenderer.h"
 #include "Activities.h"
 
 ////-------------------------------------------------------------------- Globals
@@ -93,59 +94,8 @@ BlinkActivity blinkActivity;
 // This is the current activity as updated from the menus
 Activity *currentActivity;
 
-//// Rendering classes
-class MyRenderer : public MenuComponentRenderer {
-  public:
-    void render(Menu const& menu) const {
-      oled.clearDisplay();
-      oled.setCursor(0, 0);
-      Serial.print("Displaying menu");
-      Serial.println(menu.get_name());
-
-      if (menu.get_name() == "") {
-        oled.println("Main Menu");
-      } else {
-        oled.println(menu.get_name());
-      }
-
-      for (int i = 0; i < menu.get_num_components(); ++i) {
-        MenuComponent const* cp_m_comp = menu.get_menu_component(i);
-        if (cp_m_comp->is_current()) {
-          oled.print(">");
-        } else {
-          oled.print(" ");
-        }
-        cp_m_comp->render(*this);
-
-        oled.println("");
-      }
-      Serial.println("Displaying menu");
-      oled.display();
-    }
-
-    void render_menu_item(MenuItem const& menu_item) const {
-      Serial.print("Rendering menu item ");
-      Serial.println(menu_item.get_name());
-      oled.print(menu_item.get_name());
-    }
-
-    void render_back_menu_item(BackMenuItem const& menu_item) const {
-      oled.print(menu_item.get_name());
-    }
-
-    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
-      Serial.print("Rendering menu item");
-      Serial.println(menu_item.get_name());
-      oled.print(menu_item.get_name());
-    }
-
-    void render_menu(Menu const& menu) const {
-      oled.print(menu.get_name());
-    }
-};
-
 //// Menu items
-MyRenderer menuRenderer;
+OLEDMenuRenderer menuRenderer;
 MenuSystem menuSystem(menuRenderer);
 
 Menu mmSensorsMenu("Sensors");
@@ -282,7 +232,6 @@ void loop() {
   if (isCapPressed(BTN_SELECT)) {
     debug("Select");
     menuSystem.select();
-    delay(2000);
     menuSystem.display();
   }
   if (isCapPressed(BTN_BACK)) {

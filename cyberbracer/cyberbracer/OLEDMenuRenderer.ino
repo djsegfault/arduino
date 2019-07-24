@@ -25,24 +25,12 @@
 
 #include "OLEDMenuRenderer.h"
 
-/*
-OLEDMenuRenderer::OLEDMenuRenderer(Adafruit_SSD1306 oled, int pixels_wide, int pixels_high) {
-  this->oled = oled;
-  this->pixels_wide = pixels_wide;
-  this->pixels_high = pixels_high;
-  this->is_initialized = true;
-  oled.clearDisplay();
-  oled.setCursor(0, 0);
-  oled.display();
-}
-*/
-
-/*
-
 void OLEDMenuRenderer::render(Menu const& menu) const {
-  int currentRow = 0;
   oled.clearDisplay();
   oled.setCursor(0, 0);
+  Serial.print("Displaying menu");
+  Serial.println(menu.get_name());
+
   if (menu.get_name() == "") {
     oled.println("Main Menu");
   } else {
@@ -60,9 +48,13 @@ void OLEDMenuRenderer::render(Menu const& menu) const {
 
     oled.println("");
   }
+  Serial.println("Displaying menu");
+  oled.display();
 }
 
 void OLEDMenuRenderer::render_menu_item(MenuItem const& menu_item) const {
+  Serial.print("Rendering menu item ");
+  Serial.println(menu_item.get_name());
   oled.print(menu_item.get_name());
 }
 
@@ -71,10 +63,11 @@ void OLEDMenuRenderer::render_back_menu_item(BackMenuItem const& menu_item) cons
 }
 
 void OLEDMenuRenderer::render_numeric_menu_item(NumericMenuItem const& menu_item) const {
+  Serial.print("Rendering menu item");
+  Serial.println(menu_item.get_name());
   oled.print(menu_item.get_name());
 }
 
 void OLEDMenuRenderer::render_menu(Menu const& menu) const {
   oled.print(menu.get_name());
 }
-*/

@@ -1,9 +1,12 @@
+#ifndef CYBERTRACER_ACTIVITIES_H
+#define CYBERTRACER_ACTIVITIES
+
 class Activity {
   protected:
-    unsigned long currTime = 0;      // Current time in millis, updated every call to update()
-    unsigned long lastUpdateTime = 0; // Last time the update ran
-    unsigned long interval = 0;      // How many millis between updates
-    char* name;                      // Name of the activity
+    unsigned long currTime = 0;        // Current time in millis, updated every call to update()
+    unsigned long lastUpdateTime = 0;  // Last time the update ran
+    unsigned long interval = 0;        // How many millis between updates
+    char* name;                        // Name of the activity
   public:
     Activity(char* name, unsigned long interval);
     virtual void update();
@@ -25,3 +28,5 @@ class BlinkActivity: public Activity {
     private:
     boolean isLightOn;
 };
+
+#endif
