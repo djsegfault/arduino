@@ -411,8 +411,8 @@ void handleSequenceCommand() {
 			channel = sequencer.getChannel(newBank, step);
 			Log.Info("[Seq][%d][%d] is channel %d"CR,
 					newBank,
-								step,
-								channel == NULL ? -1 : channel->getNumber());
+					step,
+					channel == NULL ? -1 : channel->getNumber());
 		}
 		break;
 	default:
