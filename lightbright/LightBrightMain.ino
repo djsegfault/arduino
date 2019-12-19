@@ -382,6 +382,39 @@ void handleSequenceCommand() {
 	case 'M':
 		sequencer.markTime();
 		break;
+	case 'S': // Set the channels in the sequence bank, any non-number is blank
+		if(newBank <0 || newBank >= LBSEQ_BANKS) {
+			Log.Error("Invalid bank '%c'"CR, newBank);
+			return;
+		}
+
+		for(int step=0; step<LBSEQ_STEPS; step++) {
+			if(commandBuffer[step + 4] == NULL) {
+				return;
+			}
+
+			int channelNumber = commandBuffer[step + 4] - '0';
+			if(channelNumber >= '0' && channelNumber <= '9') {
+				sequencer.setChannel(newBank, step, &channels[channelNumber]);
+			} else {
+				sequencer.setChannel(newBank, step, NULL);
+			}
+		}
+		break;
+	case 'P': // Print the channels in a sequence bank
+		Channel* channel = NULL;
+		if(newBank <0 || newBank >= LBSEQ_BANKS) {
+			Log.Error("Invalid bank '%c'"CR, newBank);
+			return;
+		}
+		for(int step=0; step<LBSEQ_STEPS; step++) {
+			channel = sequencer.getChannel(newBank, step);
+			Log.Info("[Seq][%d][%d] is channel %d"CR,
+					newBank,
+								step,
+								channel == NULL ? -1 : channel->getNumber());
+		}
+		break;
 	default:
 		Log.Debug("Invalid sequence command");
 		break;

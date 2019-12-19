@@ -21,6 +21,7 @@ public:
 	Sequencer();
 	void begin(RGBOutput* rgb);
 	void setChannel(int bank, int step, Channel * channel);
+	Channel* getChannel(int bank, int step);
 	void setBank(int bank);
 	void on();
 	void off();

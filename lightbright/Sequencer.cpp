@@ -23,12 +23,16 @@ void Sequencer::begin(RGBOutput* rgb) {
 	_rgb=rgb;
 }
 
-void Sequencer::setChannel(int bank, int step, Channel * channel) {
+void Sequencer::setChannel(int bank, int step, Channel* channel) {
 	_stepChannels[bank][step] = channel;
-	Log.Info("[Seq][%d][%d] is channel %d"CR,
+	Log.Info("[Seq][%d][%d] now set to channel %d"CR,
 							bank,
 							step,
 							channel == NULL ? -1 : channel->getNumber());
+}
+
+Channel* Sequencer::getChannel(int bank, int step) {
+	return _stepChannels[bank][step]->getNumber();
 }
 
 void Sequencer::setBank(int bank) {
