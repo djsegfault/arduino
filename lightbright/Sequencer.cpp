@@ -32,7 +32,7 @@ void Sequencer::setChannel(int bank, int step, Channel* channel) {
 }
 
 Channel* Sequencer::getChannel(int bank, int step) {
-	return _stepChannels[bank][step]->getNumber();
+	return _stepChannels[bank][step];
 }
 
 void Sequencer::setBank(int bank) {

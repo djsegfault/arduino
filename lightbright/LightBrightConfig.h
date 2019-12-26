@@ -58,7 +58,7 @@
 // the channel numbers for each step in each bank (should be SEQ_BANKS*SEQ_STEPS values)
 // Setting to negative number skips that step
 // The second bank is all -1 so you can sequence just RGB
-#define LBSEQ_CHANNEL_NUMBERS { {0,1,2,3}, {-1,-1,-1,-1}, {4,5,6,7}, {3,5,4,2} }
+#define LBSEQ_CHANNEL_NUMBERS { {0,1,2,3}, {4,5,6,7}, {3,5,4,2}, {-1,-1,-1,-1} }
 
 // Other configuration settings
 #define LBDEBUG_BAUD 115200L

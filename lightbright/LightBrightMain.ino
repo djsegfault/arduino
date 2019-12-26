@@ -362,6 +362,7 @@ void handleRGBCommand() {
 
 void handleSequenceCommand() {
 	int newBank = commandBuffer[3] - '0';
+	Log.Info("Bank is [%c][%d]"CR, commandBuffer[3], newBank);
 	switch(commandBuffer[2]) {
 	case 'B':
 		if(newBank >=0 && newBank < LBSEQ_BANKS) {
@@ -393,20 +394,22 @@ void handleSequenceCommand() {
 				return;
 			}
 
-			int channelNumber = commandBuffer[step + 4] - '0';
-			if(channelNumber >= '0' && channelNumber <= '9') {
+			if(commandBuffer[step + 4] >= '0' && commandBuffer[step + 4] <= '9') {
+				int channelNumber = commandBuffer[step + 4] - '0';
 				sequencer.setChannel(newBank, step, &channels[channelNumber]);
 			} else {
 				sequencer.setChannel(newBank, step, NULL);
 			}
 		}
 		break;
-	case 'P': // Print the channels in a sequence bank
+	case 'G': // Get (Print) the channels in a sequence bank
 		Channel* channel = NULL;
+
 		if(newBank <0 || newBank >= LBSEQ_BANKS) {
 			Log.Error("Invalid bank '%c'"CR, newBank);
 			return;
 		}
+
 		for(int step=0; step<LBSEQ_STEPS; step++) {
 			channel = sequencer.getChannel(newBank, step);
 			Log.Info("[Seq][%d][%d] is channel %d"CR,
