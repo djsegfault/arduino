@@ -1,3 +1,22 @@
+/*
+   This software is the driver for my "cyberbracer" cosplay.
+   See https://github.com/djsegfault/arduino/tree/master/cyberbracer for source and project information
+
+   Copyright 2019 David Kramer david@thekramers.net
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 ////-------------------------------------------------------------------- Utility functions
 // Returns the next pixel to start with for the next iteration
 uint8_t colorWheel(uint8_t startPixel) {
