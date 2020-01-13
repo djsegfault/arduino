@@ -106,6 +106,8 @@ MenuItem setupSenseDown("CapSense Down", &mainMenuHandler);
 MenuItem setupDebugOn("Debug On", &mainMenuHandler);
 MenuItem setupDebugOff("Debug Off", &mainMenuHandler);
 
+MenuItem nullActivityMenuItem("Inactive", &mainMenuHandler);
+
 
 //// menu selection handlers
 void mainMenuHandler(MenuComponent* p_menu_component) {
@@ -113,6 +115,14 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   Serial.print(p_menu_component->get_name());
   Serial.println("] selected");
 
+  // Reset the neopixels
+  //for (int x = 0; x <= 9; x++) {
+  //  CircuitPlayground.setPixelColor(x, 0);
+  //}
+  CircuitPlayground.clearPixels();
+
+
+  // Change the current activity
   if (strcmp(p_menu_component->get_name(), "Light") == 0) {
     Serial.println("Setting to Light");
     currentActivity = &blinkActivity;
@@ -122,6 +132,9 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   } else if (strcmp(p_menu_component->get_name(), "SoundColorWheel") == 0) {
     Serial.println("Setting to SoundColorWheel");
     currentActivity = &soundColorWheelActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Inactive") == 0) {
+    Serial.println("Setting to Inactive");
+    currentActivity = &nullActivity;
   } else {
     Serial.println("UNKNOWN ACTIVITY");
   }
@@ -152,6 +165,7 @@ void setup() {
   // Build the menus
   menuSystem.get_root_menu().add_menu(&mmSensorsMenu);
   menuSystem.get_root_menu().add_menu(&mmAnimMenu);
+  menuSystem.get_root_menu().add_item(&nullActivityMenuItem);
   menuSystem.get_root_menu().add_menu(&mmSetupMenu);
 
   mmSensorsMenu.add_item(&sensorLight);
@@ -239,7 +253,7 @@ void loop() {
   }
 
   currentActivity->getName();
-  if(currentActivity->isTimeToUpdate()) {
+  if (currentActivity->isTimeToUpdate()) {
     currentActivity->update();
     currentActivity->updated();
   }
