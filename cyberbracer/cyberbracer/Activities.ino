@@ -86,6 +86,7 @@ void Activity::updated() {
   lastUpdateTime = currTime;
 }
 
+
 ////-------------------------------------------------------------------- NullActivity
 NullActivity::NullActivity() : Activity("NullActivity", 10000) {
 }
@@ -286,4 +287,49 @@ void SoundColorWheelActivity::rightButtonPressed() {
   if (maxLevel >= 1) {
     maxLevel -= 1;
   }
+}
+
+
+
+////-------------------------------------------------------------------- GeoActivity
+GeoActivity::GeoActivity() : Activity("GeoActivity", 10) {
+}
+
+void GeoActivity::update() {
+  x = CircuitPlayground.motionX();
+  y = CircuitPlayground.motionY();
+  z = CircuitPlayground.motionZ();
+
+  Serial.print("X: "); Serial.print(x);
+  Serial.print(" \tY: "); Serial.print(y);
+  Serial.print(" \tZ: "); Serial.print(z);
+  Serial.println(" m/s^2");
+
+  for(int x=0 ; x<=9; x++) {
+    CircuitPlayground.setPixelColor(x, 0,255,0);
+  }
+  
+  if(x < threshholdMinus) {
+   CircuitPlayground.setPixelColor(6, 255,0,0);
+   CircuitPlayground.setPixelColor(7, 255,0,0);
+   CircuitPlayground.setPixelColor(8, 255,0,0);
+  } else if(x > threshholdPlus) {
+   CircuitPlayground.setPixelColor(1, 255,0,0);
+   CircuitPlayground.setPixelColor(2, 255,0,0);
+   CircuitPlayground.setPixelColor(3, 255,0,0);
+  }
+  
+  if(y < threshholdMinus) {
+   CircuitPlayground.setPixelColor(0, 255,0,0);
+   CircuitPlayground.setPixelColor(9, 255,0,0);
+  } else if(y > threshholdPlus) {
+   CircuitPlayground.setPixelColor(4, 255,0,0);
+   CircuitPlayground.setPixelColor(5, 255,0,0);
+  }
+  
+}
+
+void GeoActivity::leftButtonPressed() {
+}
+void GeoActivity::rightButtonPressed() {
 }

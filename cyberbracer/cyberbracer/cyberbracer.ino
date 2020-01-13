@@ -96,6 +96,7 @@ MenuItem sensorLight("Light", &mainMenuHandler);
 MenuItem sensorSound("Sound", &mainMenuHandler);
 MenuItem sensorSoundColorWheel("SoundColorWheel", &mainMenuHandler);
 MenuItem sensorTemperature("Temperature", &mainMenuHandler);
+MenuItem sensorGeo("Geo", &mainMenuHandler);
 
 Menu mmAnimMenu("Animations");
 MenuItem animColorWheel("ColorWheel", &mainMenuHandler);
@@ -143,6 +144,9 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   } else if (strcmp(p_menu_component->get_name(), "Temperature") == 0) {
     Serial.println("Setting to Temperature");
     currentActivity = &temperatureActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Geo") == 0) {
+    Serial.println("Setting to Geo");
+    currentActivity = &geoActivity;
   } else {
     Serial.println("UNKNOWN ACTIVITY ");
   }
@@ -181,6 +185,7 @@ void setup() {
   mmSensorsMenu.add_item(&sensorSound);
   mmSensorsMenu.add_item(&sensorSoundColorWheel);
   mmSensorsMenu.add_item(&sensorTemperature);
+  mmSensorsMenu.add_item(&sensorGeo);
 
   mmAnimMenu.add_item(&animColorWheel);
   mmAnimMenu.add_item(&animBlink);

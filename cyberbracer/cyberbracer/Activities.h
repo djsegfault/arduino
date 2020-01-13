@@ -103,6 +103,22 @@ class TemperatureActivity: public Activity {
 };
 
 
+class GeoActivity: public Activity {
+  public:
+    GeoActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
+    float x;
+    float y;
+    float z;
+    float threshholdPlus=2.2; 
+    float threshholdMinus=-2.2; 
+};
+
+
+
 // The singletons for each activity
 NullActivity nullActivity;
 BlinkActivity blinkActivity;
@@ -110,5 +126,6 @@ ColorWheelActivity colorWheelActivity;
 SoundActivity soundActivity;
 SoundColorWheelActivity soundColorWheelActivity;
 TemperatureActivity temperatureActivity;
+GeoActivity geoActivity;
 
 #endif
