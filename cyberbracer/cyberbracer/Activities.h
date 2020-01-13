@@ -37,6 +37,8 @@ class Activity {
     void updated();
 };
 
+//----------------- Animations
+
 class NullActivity: public Activity {
   public:
     NullActivity();
@@ -55,7 +57,18 @@ class BlinkActivity: public Activity {
     boolean isLightOn;
 };
 
+class ColorWheelActivity: public Activity {
+  public:
+    ColorWheelActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
+    int currentSpeed;
+};
 
+
+//----------------- Sensors
 class SoundActivity: public Activity {
   public:
     SoundActivity();
@@ -93,6 +106,7 @@ class TemperatureActivity: public Activity {
 // The singletons for each activity
 NullActivity nullActivity;
 BlinkActivity blinkActivity;
+ColorWheelActivity colorWheelActivity;
 SoundActivity soundActivity;
 SoundColorWheelActivity soundColorWheelActivity;
 TemperatureActivity temperatureActivity;

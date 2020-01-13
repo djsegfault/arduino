@@ -98,6 +98,7 @@ MenuItem sensorSoundColorWheel("SoundColorWheel", &mainMenuHandler);
 MenuItem sensorTemperature("Temperature", &mainMenuHandler);
 
 Menu mmAnimMenu("Animations");
+MenuItem animColorWheel("ColorWheel", &mainMenuHandler);
 MenuItem animDemo("Demo", &mainMenuHandler);
 MenuItem animLight("Flashlight", &mainMenuHandler);
 MenuItem animBlink("Blink", &mainMenuHandler);
@@ -124,6 +125,15 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   if (strcmp(p_menu_component->get_name(), "Light") == 0) {
     Serial.println("Setting to Light");
     currentActivity = &blinkActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Blink") == 0) {
+    Serial.println("Setting to Blink");
+    currentActivity = &blinkActivity;
+  } else if (strcmp(p_menu_component->get_name(), "ColorWheel") == 0) {
+    Serial.println("Setting to ColorWheel");
+    currentActivity = &colorWheelActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Inactive") == 0) {
+    Serial.println("Setting to Inactive");
+    currentActivity = &nullActivity;
   } else if (strcmp(p_menu_component->get_name(), "Sound") == 0) {
     Serial.println("Setting to Sound");
     currentActivity = &soundActivity;
@@ -133,12 +143,6 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   } else if (strcmp(p_menu_component->get_name(), "Temperature") == 0) {
     Serial.println("Setting to Temperature");
     currentActivity = &temperatureActivity;
-  } else if (strcmp(p_menu_component->get_name(), "Blink") == 0) {
-    Serial.println("Setting to Blink");
-    currentActivity = &blinkActivity;
-  } else if (strcmp(p_menu_component->get_name(), "Inactive") == 0) {
-    Serial.println("Setting to Inactive");
-    currentActivity = &nullActivity;
   } else {
     Serial.println("UNKNOWN ACTIVITY ");
   }
@@ -156,6 +160,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   CircuitPlayground.begin();
+  CircuitPlayground.setBrightness(10);
 
   Serial.println("Starting");
   // SSD1306_SWITCHCAPVCC = generate oled voltage from 3.3V internally
@@ -177,8 +182,7 @@ void setup() {
   mmSensorsMenu.add_item(&sensorSoundColorWheel);
   mmSensorsMenu.add_item(&sensorTemperature);
 
-  mmAnimMenu.add_item(&animDemo);
-  mmAnimMenu.add_item(&animLight);
+  mmAnimMenu.add_item(&animColorWheel);
   mmAnimMenu.add_item(&animBlink);
 
   mmSetupMenu.add_item(&setupSenseUp);

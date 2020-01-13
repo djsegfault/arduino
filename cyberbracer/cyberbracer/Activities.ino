@@ -122,6 +122,39 @@ void BlinkActivity::leftButtonPressed() {
 void BlinkActivity::rightButtonPressed() {
 }
 
+
+
+////------------------------------------------------------------------ColorWheelActivity
+ColorWheelActivity::ColorWheelActivity() : Activity("ColorWheelActivity", 10) {
+  currentSpeed = 20; // The higher the number the slower
+}
+
+void ColorWheelActivity::update() {
+  uint32_t offset = millis() / currentSpeed;
+  for (int i = 0; i < 10; ++i) {
+    CircuitPlayground.strip.setPixelColor(i, CircuitPlayground.colorWheel(((i * 256 / 10) + offset) & 255));
+  }
+  // Show all the pixels.
+  CircuitPlayground.strip.show();
+}
+
+void ColorWheelActivity::leftButtonPressed() {
+  if(currentSpeed < 200) {
+    currentSpeed += 5;
+  }
+  Serial.print("Current speed:  ");
+  Serial.println(currentSpeed);
+}
+void ColorWheelActivity::rightButtonPressed() {
+  if(currentSpeed > 5) {
+    currentSpeed -= 5;
+  }
+  Serial.print("Current speed:  ");
+  Serial.println(currentSpeed);
+}
+
+
+
 ////-------------------------------------------------------------------- SoundActivity
 SoundActivity::SoundActivity() : Activity("SoundActivity", 50) {
   maxLevel = 30;
