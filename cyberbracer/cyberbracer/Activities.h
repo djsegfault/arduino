@@ -78,10 +78,23 @@ class SoundColorWheelActivity: public Activity {
 };
 
 
+class TemperatureActivity: public Activity {
+  public:
+    TemperatureActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+  private:
+    int16_t maxLevel;
+    uint8_t currPixel;
+};
+
+
 // The singletons for each activity
 NullActivity nullActivity;
 BlinkActivity blinkActivity;
 SoundActivity soundActivity;
 SoundColorWheelActivity soundColorWheelActivity;
+TemperatureActivity temperatureActivity;
 
 #endif

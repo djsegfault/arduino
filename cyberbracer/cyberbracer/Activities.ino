@@ -18,6 +18,12 @@
 */
 
 ////-------------------------------------------------------------------- Utility functions
+void resetDisplay() {
+  digitalWrite(LED_BUILTIN, 0);
+  CircuitPlayground.clearPixels();
+}
+
+
 // Returns the next pixel to start with for the next iteration
 uint8_t colorWheel(uint8_t startPixel) {
   uint8_t currPixel = startPixel;
@@ -81,11 +87,12 @@ void Activity::updated() {
 }
 
 ////-------------------------------------------------------------------- NullActivity
-NullActivity::NullActivity() : Activity("NullActivity", 0) {
+NullActivity::NullActivity() : Activity("NullActivity", 10000) {
 }
 
 void NullActivity::update() {
-  debug("NulllActivity updates");
+  resetDisplay();
+  Serial.println("NulllActivity updates");
 }
 
 void NullActivity::leftButtonPressed() {
@@ -100,7 +107,7 @@ BlinkActivity::BlinkActivity() : Activity("BlinkActivity", 2000) {
 }
 
 void BlinkActivity::update() {
-  debug("LightActivity updating");
+  debug("Blink updating");
   if (isLightOn == true) {
     isLightOn = false;
     digitalWrite(LED_BUILTIN, 0);
@@ -167,6 +174,52 @@ void SoundActivity::rightButtonPressed() {
     maxLevel -= 5;
   }
 }
+
+////-------------------------------------------------------------------- TemperatureActivity
+TemperatureActivity::TemperatureActivity() : Activity("TemperatureActivity", 2000) {
+}
+
+void TemperatureActivity::update() {
+  float tempF = CircuitPlayground.temperatureF();
+  int pixelCount = map(tempF, 0, 110, 0, 10);
+  int red = 0;
+  int green = 0;
+
+  oled.clearDisplay();
+  oled.setCursor(0, 0);
+  oled.println("Current temperature: ");
+  oled.println(tempF);
+  oled.println("");
+  oled.println("Press Left or Right");
+  oled.println("to end");
+  oled.display();
+
+  CircuitPlayground.clearPixels();
+  for (int pixel = 0; pixel < pixelCount; pixel++) {
+    red = map(pixel, 0, 9, 0, 255);
+    green = map(pixel, 0, 9, 255, 0);
+    CircuitPlayground.setPixelColor(pixel, red, green, 0);
+  }
+
+  if (DEBUG_MODE == true) {
+    sprintf(messageBuffer, "Temperature  temp=%f pixelCount=%d ", tempF, pixelCount);
+    debug(messageBuffer);
+  }
+
+}
+
+void TemperatureActivity::leftButtonPressed() {
+  Serial.println("Left pressed, resetting TemperatureActivity");
+  currentActivity = &nullActivity;
+  menuSystem.display();
+}
+
+void TemperatureActivity::rightButtonPressed() {
+  Serial.println("Right pressed, resetting TemperatureActivity");
+  currentActivity = &nullActivity;
+  menuSystem.display();
+}
+
 
 
 ////-------------------------------------------------------------------- SoundColorWheelActivity

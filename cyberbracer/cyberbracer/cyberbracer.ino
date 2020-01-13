@@ -95,10 +95,12 @@ Menu mmSensorsMenu("Sensors");
 MenuItem sensorLight("Light", &mainMenuHandler);
 MenuItem sensorSound("Sound", &mainMenuHandler);
 MenuItem sensorSoundColorWheel("SoundColorWheel", &mainMenuHandler);
+MenuItem sensorTemperature("Temperature", &mainMenuHandler);
 
 Menu mmAnimMenu("Animations");
 MenuItem animDemo("Demo", &mainMenuHandler);
 MenuItem animLight("Flashlight", &mainMenuHandler);
+MenuItem animBlink("Blink", &mainMenuHandler);
 
 Menu mmSetupMenu("Setup", &mainMenuHandler);
 MenuItem setupSenseUp("CapSense Up", &mainMenuHandler);
@@ -115,11 +117,7 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   Serial.print(p_menu_component->get_name());
   Serial.println("] selected");
 
-  // Reset the neopixels
-  //for (int x = 0; x <= 9; x++) {
-  //  CircuitPlayground.setPixelColor(x, 0);
-  //}
-  CircuitPlayground.clearPixels();
+  resetDisplay();
 
 
   // Change the current activity
@@ -132,11 +130,17 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   } else if (strcmp(p_menu_component->get_name(), "SoundColorWheel") == 0) {
     Serial.println("Setting to SoundColorWheel");
     currentActivity = &soundColorWheelActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Temperature") == 0) {
+    Serial.println("Setting to Temperature");
+    currentActivity = &temperatureActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Blink") == 0) {
+    Serial.println("Setting to Blink");
+    currentActivity = &blinkActivity;
   } else if (strcmp(p_menu_component->get_name(), "Inactive") == 0) {
     Serial.println("Setting to Inactive");
     currentActivity = &nullActivity;
   } else {
-    Serial.println("UNKNOWN ACTIVITY");
+    Serial.println("UNKNOWN ACTIVITY ");
   }
 
   Serial.print(" Current activity is ");
@@ -171,9 +175,11 @@ void setup() {
   mmSensorsMenu.add_item(&sensorLight);
   mmSensorsMenu.add_item(&sensorSound);
   mmSensorsMenu.add_item(&sensorSoundColorWheel);
+  mmSensorsMenu.add_item(&sensorTemperature);
 
   mmAnimMenu.add_item(&animDemo);
   mmAnimMenu.add_item(&animLight);
+  mmAnimMenu.add_item(&animBlink);
 
   mmSetupMenu.add_item(&setupSenseUp);
   mmSetupMenu.add_item(&setupSenseDown);
