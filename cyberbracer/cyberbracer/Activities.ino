@@ -155,6 +155,27 @@ void ColorWheelActivity::rightButtonPressed() {
 }
 
 
+////------------------------------------------------------------------  Flashlight
+FlashlightActivity::FlashlightActivity() : Activity("Flashlight", 1000) {
+}
+
+void FlashlightActivity::update() {
+  resetDisplay();
+  Serial.println("Flashlight updates");
+  for (int x = 0; x <= 9; x++) {
+    CircuitPlayground.strip.setPixelColor(x, 255,255,255);
+  }
+  CircuitPlayground.strip.show();
+  
+}
+
+void FlashlightActivity::leftButtonPressed() {
+}
+void FlashlightActivity::rightButtonPressed() {
+}
+
+
+
 
 ////-------------------------------------------------------------------- SoundActivity
 SoundActivity::SoundActivity() : Activity("SoundActivity", 50) {

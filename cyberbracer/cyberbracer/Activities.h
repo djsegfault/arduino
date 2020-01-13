@@ -67,6 +67,14 @@ class ColorWheelActivity: public Activity {
     int currentSpeed;
 };
 
+class FlashlightActivity: public Activity {
+  public:
+    FlashlightActivity();
+    void update();
+    void leftButtonPressed();
+    void rightButtonPressed();
+};
+
 
 //----------------- Sensors
 class SoundActivity: public Activity {
@@ -123,6 +131,7 @@ class GeoActivity: public Activity {
 NullActivity nullActivity;
 BlinkActivity blinkActivity;
 ColorWheelActivity colorWheelActivity;
+FlashlightActivity flashlightActivity;
 SoundActivity soundActivity;
 SoundColorWheelActivity soundColorWheelActivity;
 TemperatureActivity temperatureActivity;

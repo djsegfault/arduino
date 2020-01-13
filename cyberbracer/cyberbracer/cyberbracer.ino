@@ -101,7 +101,7 @@ MenuItem sensorGeo("Geo", &mainMenuHandler);
 Menu mmAnimMenu("Animations");
 MenuItem animColorWheel("ColorWheel", &mainMenuHandler);
 MenuItem animDemo("Demo", &mainMenuHandler);
-MenuItem animLight("Flashlight", &mainMenuHandler);
+MenuItem animFlashlight("Flashlight", &mainMenuHandler);
 MenuItem animBlink("Blink", &mainMenuHandler);
 
 Menu mmSetupMenu("Setup", &mainMenuHandler);
@@ -132,6 +132,9 @@ void mainMenuHandler(MenuComponent* p_menu_component) {
   } else if (strcmp(p_menu_component->get_name(), "ColorWheel") == 0) {
     Serial.println("Setting to ColorWheel");
     currentActivity = &colorWheelActivity;
+  } else if (strcmp(p_menu_component->get_name(), "Flashlight") == 0) {
+    Serial.println("Setting to Flashlight");
+    currentActivity = &flashlightActivity;
   } else if (strcmp(p_menu_component->get_name(), "Inactive") == 0) {
     Serial.println("Setting to Inactive");
     currentActivity = &nullActivity;
@@ -189,6 +192,7 @@ void setup() {
 
   mmAnimMenu.add_item(&animColorWheel);
   mmAnimMenu.add_item(&animBlink);
+  mmAnimMenu.add_item(&animFlashlight);
 
   mmSetupMenu.add_item(&setupSenseUp);
   mmSetupMenu.add_item(&setupSenseDown);
