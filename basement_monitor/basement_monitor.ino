@@ -15,9 +15,10 @@ const int CH = 9;
 DHTesp dht;
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
+char buffer[81];
 double temperature_f = 0;
 double humidity = 0;
-char buffer[81];
+int lightLevel = 0;
 
 void mqttConnect()
 {
@@ -82,7 +83,6 @@ void setupWiFi()
 
 void setupDHTTask()
 {
-    // Read dht every 1000[ms] and repeat forever
     Tasks.interval(10000, [] {
         // Reading temperature for humidity takes about 250 milliseconds!
         // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
@@ -111,6 +111,21 @@ void setupDHTTask()
     });
 }
 
+
+void setupLDRTask()
+{
+    Tasks.interval(15000, [] {
+        lightLevel = analogRead(LDR_PIN);
+        sprintf(buffer, "%d", lightLevel);
+        Serial.print("Light ");
+        Serial.println(buffer);
+        mqttClient.publish("sensors/basement/light", buffer);
+        updateDisplay();
+
+    });
+}
+
+
 void setupMQTT()
 {
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
@@ -125,9 +140,9 @@ void updateDisplay()
     sprintf(buffer, "IP %s", WiFi.localIP().toString().c_str());
     Heltec.display->drawString(0, CH*1, MQTT_CLIENT_NAME);
     Heltec.display->drawString(0, 0, buffer);
-    sprintf(buffer, "T %2.2f  H %2.2f", temperature_f, humidity);
+    sprintf(buffer, "T %2.2f    H %2.2f", temperature_f, humidity);
     Heltec.display->drawString(0, CH*3, buffer);
-    sprintf(buffer, "MS %ld", millis());
+    sprintf(buffer, "L %d", lightLevel);
     Heltec.display->drawString(0, CH*4, buffer);
     Heltec.display->display();
 }
@@ -148,6 +163,7 @@ void setup()
     setupWiFi();
     setupMQTT();
     setupDHTTask();
+    setupLDRTask();
 }
 
 void loop()
