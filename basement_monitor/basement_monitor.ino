@@ -30,10 +30,10 @@ void mqttConnect()
         if (mqttClient.connect(MQTT_CLIENT_NAME, MQTT_USERNAME, MQTT_PASSWORD))
         {
             Serial.println("MQTT connected");
-            // Once connected, publish an announcement...
-            //mqttClient.publish("sensors/basement/connected", "1");
-            // ... and resubscribe
-            //mqttClient.subscribe("sensors/basement/led");
+            mqttClient.publish("sensors/basement/connected", "1");
+            boolean success = mqttClient.subscribe("sensors/basement/led");
+            Serial.print("Subscribe returned ");
+            Serial.println(success);
         }
         else
         {
@@ -48,9 +48,9 @@ void mqttConnect()
 
 void mqttSubHandler(char *topic, byte *message, unsigned int length)
 {
-    Serial.print("Message arrived on topic: ");
+    Serial.print("Message arrived on topic: '");
     Serial.print(topic);
-    Serial.print(". Message: ");
+    Serial.print("'. Message: ");
     String messageTemp;
 
     for (int i = 0; i < length; i++)
@@ -60,7 +60,10 @@ void mqttSubHandler(char *topic, byte *message, unsigned int length)
     }
     Serial.println();
 
-    // Act on message here
+    // Act on message here sensors/basement/led
+    //        digitalWrite(LED_PIN, HIGH);
+    //    digitalWrite(LED_PIN, HIGH);
+
 }
 
 void setupWiFi()
@@ -107,7 +110,6 @@ void setupDHTTask()
         sprintf(buffer, "%2.2f", humidity);
         mqttClient.publish("sensors/basement/humidity", buffer);
         updateDisplay();
-
     });
 }
 
@@ -159,6 +161,9 @@ void setup()
     // Sensor setup
     dht.setup(DHT_DATA_PIN, DHTesp::DHT11);
     Serial.println("DHT initiated");
+
+    // LED setup
+    // pinMode(LED_PIN, OUTPUT);
 
     setupWiFi();
     setupMQTT();
