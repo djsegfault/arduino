@@ -19,6 +19,7 @@ char buffer[81];
 double temperature_f = 0;
 double humidity = 0;
 int lightLevel = 0;
+boolean ledLit = false;
 
 void mqttConnect()
 {
@@ -46,7 +47,7 @@ void mqttConnect()
     }
 }
 
-void mqttSubHandler(char *topic, byte *message, unsigned int length)
+void mqttCallback(char *topic, byte *message, unsigned int length)
 {
     Serial.print("Message arrived on topic: '");
     Serial.print(topic);
@@ -61,9 +62,22 @@ void mqttSubHandler(char *topic, byte *message, unsigned int length)
     Serial.println();
 
     // Act on message here sensors/basement/led
-    //        digitalWrite(LED_PIN, HIGH);
-    //    digitalWrite(LED_PIN, HIGH);
-
+    if(strcmp("sensors/basement/led", topic) == 0)
+    {
+        if(message[0] == '1')
+        {
+            Serial.println("Turning LED on");
+            digitalWrite(LED_PIN, HIGH);
+            ledLit = true;
+        } else {
+            Serial.println("Turning LED off");
+            digitalWrite(LED_PIN, LOW);
+            ledLit = false;
+        }
+        updateDisplay();
+    } else {
+        Serial.println("Unknown topic");
+    }
 }
 
 void setupWiFi()
@@ -93,7 +107,7 @@ void setupDHTTask()
         // Check if any reads failed and exit early (to try again).
         if (dht.getStatus() != 0)
         {
-            Serial.println("DHT11 error status: " + String(dht.getStatusString()));
+            Serial.println("DHT error status: " + String(dht.getStatusString()));
             return false;
         }
 
@@ -127,11 +141,19 @@ void setupLDRTask()
     });
 }
 
+void setupMQTTPollTask()
+{
+    Tasks.interval(500, [] {
+        mqttClient.loop();
+    });
+
+}
+
 
 void setupMQTT()
 {
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
-    mqttClient.setCallback(mqttSubHandler);
+    mqttClient.setCallback(mqttCallback);
     mqttConnect();
 }
 
@@ -142,10 +164,14 @@ void updateDisplay()
     sprintf(buffer, "IP %s", WiFi.localIP().toString().c_str());
     Heltec.display->drawString(0, CH*1, MQTT_CLIENT_NAME);
     Heltec.display->drawString(0, 0, buffer);
-    sprintf(buffer, "T %2.2f    H %2.2f", temperature_f, humidity);
+    sprintf(buffer, "T %2.2f", temperature_f);
     Heltec.display->drawString(0, CH*3, buffer);
-    sprintf(buffer, "L %d", lightLevel);
+    sprintf(buffer, "H %2.2f", humidity);
+    Heltec.display->drawString(CW*11, CH*3, buffer);
+    sprintf(buffer, "L %5d", lightLevel);
     Heltec.display->drawString(0, CH*4, buffer);
+    sprintf(buffer, "LED %1d", ledLit);
+    Heltec.display->drawString(CW*11, CH*4, buffer);
     Heltec.display->display();
 }
 
@@ -159,16 +185,17 @@ void setup()
     Heltec.begin(true /*DisplayEnable Enable*/, false /*LoRa Enable*/, true /*Serial Enable*/);
 
     // Sensor setup
-    dht.setup(DHT_DATA_PIN, DHTesp::DHT11);
+    dht.setup(DHT_DATA_PIN, DHTesp::DHT22);
     Serial.println("DHT initiated");
 
     // LED setup
-    // pinMode(LED_PIN, OUTPUT);
+    pinMode(LED_PIN, OUTPUT);
 
     setupWiFi();
     setupMQTT();
     setupDHTTask();
     setupLDRTask();
+    setupMQTTPollTask();
 }
 
 void loop()
