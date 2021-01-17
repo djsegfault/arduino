@@ -9,6 +9,7 @@ In my case, I used [Mosquitto](https://mosquitto.org/) as an MQTT broker, [MQTT 
 The hardware used in writing it is a [Heltec/Hiletgo SP32 OLED WiFi Kit ESP-32 0.96 Inch Blue OLED Display WIFI Bluetooth CP2012 Internet Dev Board](www.hiletgo.com/ProductDetail/2157143.html), which has an OLED display attached to the top, making it easier to debug and use.
 
 It uses a [DHT22 temperature-humidity sensor ](https://www.adafruit.com/product/385) for temperature and humidity sensing, and [a generic LDR](https://www.adafruit.com/product/161) (light dependent resistor AKA photoresistor AKA photosensor).  
+![My hardware](hardware.png)
 
 ## Messaging
 The following MQTT topics are used in the code as is:
