@@ -1,3 +1,10 @@
+/**
+ * basement_monitor - IoT demo by David Kramer
+ * See https://github.com/djsegfault/arduino/tree/master/basement_monitor
+ * See LICENSE
+ * See README.md
+ **/
+
 #include <heltec.h>
 #include <DHTesp.h>
 #include <PubSubClient.h>
