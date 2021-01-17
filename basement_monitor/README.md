@@ -10,6 +10,7 @@ The hardware used in writing it is a [Heltec/Hiletgo SP32 OLED WiFi Kit ESP-32 0
 
 It uses a [DHT22 temperature-humidity sensor ](https://www.adafruit.com/product/385) for temperature and humidity sensing, and [a generic LDR](https://www.adafruit.com/product/161) (light dependent resistor AKA photoresistor AKA photosensor).  
 ![My hardware](hardware.png)
+![Fritzing diagram](basement_monitor_fritzing.png)
 
 ## Messaging
 The following MQTT topics are used in the code as is:
