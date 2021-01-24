@@ -26,6 +26,8 @@ char buffer[81];
 double temperature_f = 0;
 double humidity = 0;
 int lightLevel = 0;
+long lightOnSince = 0;
+
 boolean ledLit = false;
 
 void mqttConnect()
@@ -69,20 +71,24 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
     Serial.println();
 
     // Act on message here sensors/basement/led
-    if(strcmp("sensors/basement/led", topic) == 0)
+    if (strcmp("sensors/basement/led", topic) == 0)
     {
-        if(message[0] == '1')
+        if (message[0] == '1')
         {
             Serial.println("Turning LED on");
             digitalWrite(LED_PIN, HIGH);
             ledLit = true;
-        } else {
+        }
+        else
+        {
             Serial.println("Turning LED off");
             digitalWrite(LED_PIN, LOW);
             ledLit = false;
         }
         updateDisplay();
-    } else {
+    }
+    else
+    {
         Serial.println("Unknown topic");
     }
 }
@@ -134,7 +140,6 @@ void setupDHTTask()
     });
 }
 
-
 void setupLDRTask()
 {
     Tasks.interval(15000, [] {
@@ -145,6 +150,29 @@ void setupLDRTask()
         mqttClient.publish("sensors/basement/light", buffer);
         updateDisplay();
 
+        // Update light on time, reported as seconds since on
+        if (lightLevel > 100)
+        {
+            if (lightOnSince == 0)
+            {
+                // Light just turned on
+                lightOnSince = millis();
+                sprintf(buffer, "%d", 0);
+            }
+            else
+            {
+                sprintf(buffer, "%d", (millis() - lightOnSince) / 1000);
+            }
+            mqttClient.publish("sensors/basement/light_on_time", buffer);
+        }
+        else
+        {
+            if (lightOnSince != 0)
+            {
+                // Lights off, reset
+                lightOnSince = 0;
+            }
+        }
     });
 }
 
@@ -153,9 +181,7 @@ void setupMQTTPollTask()
     Tasks.interval(500, [] {
         mqttClient.loop();
     });
-
 }
-
 
 void setupMQTT()
 {
@@ -169,16 +195,16 @@ void updateDisplay()
     Heltec.display->clear();
     Heltec.display->drawString(0, 0, "IP");
     sprintf(buffer, "IP %s", WiFi.localIP().toString().c_str());
-    Heltec.display->drawString(0, CH*1, MQTT_CLIENT_NAME);
+    Heltec.display->drawString(0, CH * 1, MQTT_CLIENT_NAME);
     Heltec.display->drawString(0, 0, buffer);
     sprintf(buffer, "T %2.2f", temperature_f);
-    Heltec.display->drawString(0, CH*3, buffer);
+    Heltec.display->drawString(0, CH * 3, buffer);
     sprintf(buffer, "H %2.2f", humidity);
-    Heltec.display->drawString(CW*11, CH*3, buffer);
+    Heltec.display->drawString(CW * 11, CH * 3, buffer);
     sprintf(buffer, "L %5d", lightLevel);
-    Heltec.display->drawString(0, CH*4, buffer);
+    Heltec.display->drawString(0, CH * 4, buffer);
     sprintf(buffer, "LED %1d", ledLit);
-    Heltec.display->drawString(CW*11, CH*4, buffer);
+    Heltec.display->drawString(CW * 11, CH * 4, buffer);
     Heltec.display->display();
 }
 

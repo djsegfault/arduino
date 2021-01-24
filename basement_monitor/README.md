@@ -19,6 +19,7 @@ The following MQTT topics are used in the code as is:
   - **sensors/basement/temperature_f**: Current temperature in farenheight 
   - **sensors/basement/humidity**: Relative humidity (0-100)
   - **sensors/basement/light**: Current light level (0 - 4096)
+  - **sensors/basement/light_on_time**: How many seconds has the light been on for
 - Received
   - **sensors/basement/led**: **1** turns on the LED, anything else turns it off
   
