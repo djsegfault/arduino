@@ -24,7 +24,7 @@ The following MQTT topics are used in the code as is:
   
 ## Monitoring and Alerting Workflow
 [Node Red](https://nodered.org/) is a message workflow product that can subscribe and publish to MQTT topics, and take actions on those messages.  In this case, I have it configured to send me an alert if the temperature is too high or too low, or if the basement is too humid.
-~[Basement workflow](node_red_workflow.png)
+![Basement workflow](node_red_workflow.png)
 
 ## Configuration 
 Since the **config.h** file has authentication information and specific pin usage, I have saved a starting file as **config_TEMPLATE.h**.  Be sure to rename it to **config.h** after adding your specific values.
