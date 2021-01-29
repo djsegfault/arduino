@@ -40,8 +40,8 @@ void mqttConnect()
         if (mqttClient.connect(MQTT_CLIENT_NAME, MQTT_USERNAME, MQTT_PASSWORD))
         {
             Serial.println("MQTT connected");
-            mqttClient.publish("sensors/basement/connected", "1");
-            boolean success = mqttClient.subscribe("sensors/basement/led");
+            mqttClient.publish(TOPIC_CONNECTED, "1");
+            boolean success = mqttClient.subscribe(TOPIC_LED);
             Serial.print("Subscribe returned ");
             Serial.println(success);
         }
@@ -70,8 +70,8 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
     }
     Serial.println();
 
-    // Act on message here sensors/basement/led
-    if (strcmp("sensors/basement/led", topic) == 0)
+    // Act on LED message here
+    if (strcmp(TOPIC_LED, topic) == 0)
     {
         if (message[0] == '1')
         {
@@ -113,7 +113,7 @@ void setupWiFi()
 
 void setupDHTTask()
 {
-    Tasks.interval(10000, [] {
+    Tasks.interval(DHT_INTERVAL, [] {
         // Reading temperature for humidity takes about 250 milliseconds!
         // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
         TempAndHumidity dhtValues = dht.getTempAndHumidity();
@@ -132,22 +132,22 @@ void setupDHTTask()
         // Send to MQTT
         mqttConnect();
         sprintf(buffer, "%2.2f", temperature_f);
-        mqttClient.publish("sensors/basement/temperature_f", buffer);
+        mqttClient.publish(TOPIC_TEMP, buffer);
 
         sprintf(buffer, "%2.2f", humidity);
-        mqttClient.publish("sensors/basement/humidity", buffer);
+        mqttClient.publish(TOPIC_HUM, buffer);
         updateDisplay();
     });
 }
 
 void setupLDRTask()
 {
-    Tasks.interval(15000, [] {
+    Tasks.interval(LDR_INTERVAL, [] {
         lightLevel = analogRead(LDR_PIN);
         sprintf(buffer, "%d", lightLevel);
         Serial.print("Light ");
         Serial.println(buffer);
-        mqttClient.publish("sensors/basement/light", buffer);
+        mqttClient.publish(TOPIC_LIGHT_LEVEL, buffer);
         updateDisplay();
 
         // Update light on time, reported as seconds since on
@@ -163,7 +163,7 @@ void setupLDRTask()
             {
                 sprintf(buffer, "%d", (millis() - lightOnSince) / 1000);
             }
-            mqttClient.publish("sensors/basement/light_on_time", buffer);
+            mqttClient.publish(TOPIC_LIGHT_ON_TIME, buffer);
         }
         else
         {
@@ -178,7 +178,7 @@ void setupLDRTask()
 
 void setupMQTTPollTask()
 {
-    Tasks.interval(500, [] {
+    Tasks.interval(MQTT_INTERVAL, [] {
         mqttClient.loop();
     });
 }
