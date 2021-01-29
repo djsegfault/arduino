@@ -45,6 +45,9 @@ void mqttConnect()
         // Attempt to connect
         if (mqttClient.connect(MQTT_CLIENT_NAME, MQTT_USERNAME, MQTT_PASSWORD))
         {
+            Heltec.display->clear();
+            Heltec.display->drawString(0, 0, "Connected to MQTT");
+            Heltec.display->display();
             Serial.println("MQTT connected");
             mqttClient.publish(TOPIC_CONNECTED, "1");
             boolean success = mqttClient.subscribe(TOPIC_LED);
@@ -245,6 +248,11 @@ void setup()
     setupDHTTask();
     setupLDRTask();
     setupMQTTPollTask();
+
+    Heltec.display->clear();
+    Heltec.display->drawString(0, 0, "Setup complete!");
+    Heltec.display->display();
+
 }
 
 void loop()
