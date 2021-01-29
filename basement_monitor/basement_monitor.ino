@@ -35,6 +35,12 @@ void mqttConnect()
     // Loop until we're reconnected
     while (!mqttClient.connected())
     {
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 0, "Connecting to MQTT");
+        sprintf(buffer, "Status=%d", mqttClient.state());
+        Heltec.display->drawString(0, CH * 2, buffer);
+        Heltec.display->display();
+
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
         if (mqttClient.connect(MQTT_CLIENT_NAME, MQTT_USERNAME, MQTT_PASSWORD))
@@ -51,6 +57,8 @@ void mqttConnect()
             Serial.print(mqttClient.state());
             Serial.println(" try again in 5 seconds");
             // Wait 5 seconds before retrying
+            Heltec.display->clear();
+            Heltec.display->display();
             delay(5000);
         }
     }
@@ -103,8 +111,16 @@ void setupWiFi()
 
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(500);
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 0, "Connecting to SSID");
+        sprintf(buffer, "'%s'", WIFI_SSID);
+        Heltec.display->drawString(0, CH * 2, buffer);
+        Heltec.display->display();
+        delay(1000);
         Serial.print(".");
+        Heltec.display->clear();
+        Heltec.display->display();
+        delay(1000);
     }
 
     Serial.print("IP number assigned by DHCP is ");
